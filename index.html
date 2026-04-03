@@ -3,20 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1e3c72">
-    <meta name="description" content="Мотивирующие цитаты с трекером потерянного времени">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Мотивирующие цитаты с трекером времени">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Цитаты">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
     <title>Цитаты</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        :root {
+            /* Тёмная тема (по умолчанию) */
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --button-bg: rgba(255, 255, 255, 0.12);
+            --button-hover: rgba(255, 255, 255, 0.2);
+            --accent-red: #ff3b30;
+            --accent-green: #34c759;
+            --accent-gold: #ffd60a;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --glow-red: rgba(255, 59, 48, 0.4);
+            --glow-green: rgba(52, 199, 89, 0.4);
+        }
+
+        /* Светлая тема */
+        [data-theme="light"] {
+            --bg-gradient-1: #f0f4f8;
+            --bg-gradient-2: #d9e2ec;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --card-border: rgba(255, 255, 255, 0.5);
+            --text-primary: #1a1a2e;
+            --text-secondary: rgba(26, 26, 46, 0.7);
+            --button-bg: rgba(255, 255, 255, 0.5);
+            --button-hover: rgba(255, 255, 255, 0.7);
+            --accent-red: #ff3b30;
+            --accent-green: #34c759;
+            --accent-gold: #b8860b;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --glow-red: rgba(255, 59, 48, 0.3);
+            --glow-green: rgba(52, 199, 89, 0.3);
         }
 
         html, body {
@@ -25,20 +61,22 @@
         }
 
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            padding: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            transition: all 0.5s ease;
         }
 
-        /* ==================== КАРТОЧКА ЦИТАТЫ ==================== */
+        /* ==================== КАРТОЧКА ЦИТАТЫ (GLASSMORPHISM) ==================== */
         .quote-card {
             position: relative;
-            border-radius: 15px;
+            border-radius: 24px;
             padding: 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: var(--shadow), 
+                        inset 0 1px 0 var(--card-border);
             overflow: hidden;
             flex: 1;
             min-height: 0;
@@ -49,6 +87,8 @@
             background-position: center;
             background-repeat: no-repeat;
             transition: all 0.5s ease;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .quote-card::before {
@@ -58,18 +98,28 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.2) 100%);
+            background: linear-gradient(to top, 
+                rgba(0, 0, 0, 0.85) 0%, 
+                rgba(0, 0, 0, 0.5) 50%, 
+                rgba(0, 0, 0, 0.1) 100%);
             z-index: 1;
+        }
+
+        [data-theme="light"] .quote-card::before {
+            background: linear-gradient(to top, 
+                rgba(0, 0, 0, 0.6) 0%, 
+                rgba(0, 0, 0, 0.2) 50%, 
+                rgba(0, 0, 0, 0.05) 100%);
         }
 
         .quote-card::after {
             content: '"';
             position: absolute;
-            top: 10px;
-            left: 15px;
-            font-size: 6rem;
+            top: 15px;
+            left: 20px;
+            font-size: 7rem;
             font-family: 'Playfair Display', serif;
-            color: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.1);
             line-height: 1;
             z-index: 2;
         }
@@ -77,25 +127,30 @@
         .quote-content {
             position: relative;
             z-index: 3;
-            padding: 20px;
+            padding: 24px;
         }
 
         .quote-text {
             font-family: 'Playfair Display', serif;
             font-style: italic;
-            font-size: 1.3rem;
-            color: #ffffff;
+            font-size: 1.35rem;
+            color: var(--text-primary);
             line-height: 1.5;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 12px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            font-weight: 500;
+        }
+
+        [data-theme="light"] .quote-text {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .quote-author {
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-secondary);
             font-size: 0.95rem;
             text-align: right;
             font-weight: 600;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
         }
 
         .quote-author::before {
@@ -104,23 +159,24 @@
 
         .translation-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 193, 7, 0.9);
+            top: 12px;
+            right: 12px;
+            background: rgba(255, 214, 10, 0.9);
             color: #000;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 0.65rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
             font-weight: 700;
             z-index: 4;
             display: none;
+            backdrop-filter: blur(10px);
         }
 
         .translation-badge.visible {
             display: block;
         }
 
-        /* ==================== КНОПКИ ==================== */
+        /* ==================== КНОПКИ (GLASSMORPHISM) ==================== */
         .main-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -128,93 +184,113 @@
         }
 
         .btn {
-            background: rgba(255, 255, 255, 0.25);
-            border: none;
-            padding: 14px 15px;
-            border-radius: 12px;
-            color: #ffffff;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.95rem;
+            background: var(--button-bg);
+            border: 1px solid var(--card-border);
+            padding: 16px 20px;
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .btn:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: translateY(-2px);
+            background: var(--button-hover);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
         .btn:active {
-            transform: translateY(0);
+            transform: translateY(0) scale(0.98);
         }
 
         .btn:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
         }
 
-        /* ==================== ТРЕКЕР ВРЕМЕНИ ==================== */
+        /* ==================== ТРЕКЕР ВРЕМЕНИ (GLASSMORPHISM) ==================== */
         .time-tracker {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            border-radius: 15px;
-            padding: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 14px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow),
+                        inset 0 1px 0 var(--card-border);
         }
 
         .tracker-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         .tracker-btn {
-            padding: 12px 15px;
-            border-radius: 12px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tracker-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tracker-btn:hover::before {
+            opacity: 1;
         }
 
         .tracker-btn.start {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            background: linear-gradient(135deg, var(--accent-red) 0%, #d70015 100%);
             color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 20px var(--glow-red);
         }
 
         .tracker-btn.start:hover {
-            background: linear-gradient(135deg, #e74c5c 0%, #d32f3f 100%);
             transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--glow-red);
         }
 
         .tracker-btn.stop {
-            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            background: linear-gradient(135deg, var(--accent-green) 0%, #248a3d 100%);
             color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 20px var(--glow-green);
         }
 
         .tracker-btn.stop:hover {
-            background: linear-gradient(135deg, #34ce57 0%, #2e9b40 100%);
             transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--glow-green);
         }
 
         .tracker-btn:disabled {
@@ -224,49 +300,67 @@
         }
 
         .tracker-btn.active {
-            animation: pulse 2s infinite;
+            animation: pulse-glow 2s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
-            50% { box-shadow: 0 4px 25px rgba(220, 53, 69, 0.6); }
+        @keyframes pulse-glow {
+            0%, 100% { 
+                box-shadow: 0 4px 20px var(--glow-red);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 8px 35px var(--glow-red);
+                transform: scale(1.02);
+            }
         }
 
         .lost-time-display {
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .lost-time-value {
-            color: #ffc107;
-            font-size: 1.8rem;
+            color: var(--accent-gold);
+            font-size: 2rem;
             font-weight: 700;
-            font-family: 'Montserrat', sans-serif;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', monospace;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            letter-spacing: 2px;
+        }
+
+        [data-theme="light"] .lost-time-value {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
+            gap: 8px;
         }
 
         .stat-item {
             text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 6px;
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="light"] .stat-item {
+            background: rgba(255, 255, 255, 0.4);
         }
 
         .stat-label {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.65rem;
-            margin-bottom: 2px;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            margin-bottom: 4px;
+            font-weight: 500;
         }
 
         .stat-value {
-            color: #ffffff;
-            font-size: 0.85rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
             font-weight: 600;
         }
 
@@ -276,16 +370,20 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: rgba(40, 167, 69, 0.95);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            padding: 14px 28px;
+            border-radius: 20px;
             font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            font-size: 0.95rem;
+            box-shadow: var(--shadow),
+                        0 0 0 1px var(--card-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             opacity: 0;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
+            border: 1px solid var(--card-border);
         }
 
         .toast.show {
@@ -293,8 +391,14 @@
             opacity: 1;
         }
 
+        .toast.success {
+            background: rgba(52, 199, 89, 0.9);
+            color: white;
+        }
+
         .toast.error {
-            background: rgba(220, 53, 69, 0.95);
+            background: rgba(255, 59, 48, 0.9);
+            color: white;
         }
 
         @keyframes fadeIn {
@@ -318,13 +422,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             display: none;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             z-index: 9999;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
         }
 
         .loading.active {
@@ -334,8 +438,8 @@
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid var(--accent-gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 15px;
@@ -355,20 +459,22 @@
         /* PWA Install Banner */
         .install-banner {
             position: fixed;
-            bottom: 10px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: rgba(30, 60, 114, 0.95);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 12px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 16px;
             display: none;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            gap: 12px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
             z-index: 999;
             transition: all 0.4s ease;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            border: 1px solid var(--card-border);
         }
 
         .install-banner.show {
@@ -377,23 +483,51 @@
         }
 
         .install-banner button {
-            background: #28a745;
+            background: var(--accent-green);
             border: none;
-            padding: 6px 15px;
-            border-radius: 8px;
+            padding: 8px 18px;
+            border-radius: 10px;
             color: white;
             font-weight: 600;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
 
         .install-banner button.close {
             background: transparent;
-            border: 2px solid rgba(255,255,255,0.5);
+            border: 1px solid var(--card-border);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 10px 14px;
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: var(--button-hover);
         }
     </style>
 </head>
 <body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">
+        🌓
+    </button>
+
     <!-- PWA Install Banner -->
     <div class="install-banner" id="installBanner">
         <span>📲 Установить</span>
@@ -460,7 +594,7 @@
         </div>
     </div>
 
-    <div class="toast" id="toast">Скопировано!</div>
+    <div class="toast" id="toast">Готово!</div>
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
@@ -494,6 +628,50 @@
                     .catch(err => console.log('SW error:', err));
             });
         }
+
+        // ==================== ТЕМА (СИСТЕМНАЯ + РУЧНАЯ) ====================
+        
+        // Проверка системной темы
+        function getSystemTheme() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        // Установка темы
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            // Обновление meta theme-color
+            const metaColor = document.querySelector('meta[name="theme-color"]');
+            if (metaColor) {
+                metaColor.setAttribute('content', theme === 'dark' ? '#000000' : '#ffffff');
+            }
+        }
+
+        // Переключение темы
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            setTheme(next);
+        }
+
+        // Инициализация темы
+        function initTheme() {
+            const saved = localStorage.getItem('theme');
+            if (saved) {
+                setTheme(saved);
+            } else {
+                setTheme(getSystemTheme());
+            }
+        }
+
+        // Слушатель изменений системной темы
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            const saved = localStorage.getItem('theme');
+            if (!saved) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
 
         // ==================== РЕЗЕРВНЫЕ ЦИТАТЫ ====================
         const fallbackQuotes = [
@@ -567,6 +745,7 @@
 
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
             updateOnlineStatus();
             loadRandomBackground();
             updateTimeDisplay();
@@ -742,7 +921,7 @@
                 link.download = `цитата-${Date.now()}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                showToast("Скачано!");
+                showToast("Скачано!", 'success');
             }).catch(() => {
                 showToast("Ошибка!", 'error');
             });
@@ -752,13 +931,9 @@
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
-            toast.className = 'toast show';
-            if (type === 'error') {
-                toast.classList.add('error');
-            }
+            toast.className = `toast show ${type}`;
             setTimeout(() => {
                 toast.classList.remove('show');
-                toast.classList.remove('error');
             }, 2000);
         }
 
@@ -820,7 +995,7 @@
             
             startTimerDisplay();
             
-            showToast('Таймер запущен!');
+            showToast('Таймер запущен!', 'success');
         }
 
         function startTimerDisplay() {
@@ -860,7 +1035,7 @@
             updateTimeDisplay();
             updateStats();
             
-            showToast(`Записано ${formatTimeShort(duration)}`);
+            showToast(`Записано ${formatTimeShort(duration)}`, 'success');
         }
 
         window.addEventListener('beforeunload', () => {
