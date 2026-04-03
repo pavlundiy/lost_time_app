@@ -30,6 +30,7 @@
             padding: 10px;
             display: flex;
             flex-direction: column;
+            gap: 10px;
         }
 
         /* ==================== КАРТОЧКА ЦИТАТЫ ==================== */
@@ -37,7 +38,6 @@
             position: relative;
             border-radius: 15px;
             padding: 0;
-            margin-bottom: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             overflow: hidden;
             flex: 1;
@@ -124,18 +124,17 @@
         .main-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 10px;
         }
 
         .btn {
             background: rgba(255, 255, 255, 0.25);
             border: none;
-            padding: 12px 15px;
+            padding: 14px 15px;
             border-radius: 12px;
             color: #ffffff;
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             backdrop-filter: blur(10px);
@@ -422,7 +421,7 @@
 
     <!-- ==================== КНОПКИ ==================== -->
     <div class="main-buttons">
-        <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">
+        <button class="btn" onclick="generateQuote()" id="generateBtn">
             🎲 Новая
         </button>
         <button class="btn" onclick="downloadImage()" id="downloadBtn">
@@ -434,10 +433,10 @@
     <div class="time-tracker">
         <div class="tracker-buttons">
             <button class="tracker-btn start" id="btnStart" onclick="startTimer()">
-                🔴 Ушел
+                👔 К шефу
             </button>
             <button class="tracker-btn stop" id="btnStop" onclick="stopTimer()" disabled>
-                🟢 Пришел
+                🕊️ Свободен
             </button>
         </div>
 
