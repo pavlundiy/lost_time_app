@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quotes-app-v6';
+const CACHE_NAME = 'quotes-app-v7';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.json',
