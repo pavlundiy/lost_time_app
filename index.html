@@ -485,11 +485,21 @@
 
 const quoteAPIs = [
     {
+        name: 'Forismatic (RU)',
+        // Добавлен рандомный key для предотвращения кэширования на стороне сервера
+        url: `http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=ru&key=${Math.floor(Math.random() * 1000000)}`,
+        parse: (data) => ({
+            text: data.quoteText,
+            author: data.quoteAuthor.trim() || 'Неизвестный автор',
+            originalLang: 'ru'
+        })
+    },
+    {
         name: 'Forismatic',
         url: 'https://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en',
         parse: (data) => ({
             text: data.quoteText,
-            author: data.quoteAuthor,
+            author: data.quoteAuthor.trim() || 'Unknown Author',
             originalLang: 'en'
         })
     },
