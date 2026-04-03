@@ -483,18 +483,35 @@
 
         // ==================== ЦИТАТЫ ====================
 
-        const quoteAPIs = [
-            {
-                name: 'ZenQuotes',
-                url: 'https://zenquotes.io/api/random',
-                parse: (data) => ({ text: data[0].q, author: data[0].a, originalLang: 'en' })
-            },
-            {
-                name: 'Quotable',
-                url: 'https://api.quotable.io/random',
-                parse: (data) => ({ text: data.content, author: data.author, originalLang: 'en' })
-            }
-        ];
+const quoteAPIs = [
+    {
+        name: 'Forismatic',
+        url: 'https://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en',
+        parse: (data) => ({
+            text: data.quoteText,
+            author: data.quoteAuthor,
+            originalLang: 'en'
+        })
+    },
+    {
+        name: 'Quotable',
+        url: 'https://api.quotable.io/random',
+        parse: (data) => ({
+            text: data.content,
+            author: data.author,
+            originalLang: 'en'
+        })
+    },
+    {
+        name: 'Stoic',
+        url: 'https://stoic.tekloon.net/stoic-quote',
+        parse: (data) => ({
+            text: data.quote,
+            author: data.author || 'Стоический философ',
+            originalLang: 'en'
+        })
+    }
+];
 
         let currentQuote = null;
         let isOnline = navigator.onLine;
