@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1e3c72">
     <meta name="description" content="Мотивирующие цитаты с трекером потерянного времени">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -10,231 +10,38 @@
     <meta name="apple-mobile-web-app-title" content="Цитаты">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <title>Мотивирующие Цитаты</title>
+    <title>Цитаты</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
-    <!-- [ОСТАЛЬНЫЕ СТИЛИ ИЗ ВАШЕГО КОДА - БЕЗ ИЗМЕНЕНИЙ] -->
     <style>
-        /* Вставьте сюда все стили из вашего текущего HTML файла */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'Montserrat', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        }
-
-        .container {
-            max-width: 750px;
-            width: 100%;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: #ffffff;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-        }
-
-        .header p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.1rem;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
-        }
-
-        .controls {
+            padding: 10px;
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            flex-direction: column;
         }
 
-        .control-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 16px;
-            border-radius: 20px;
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: translateY(-2px);
-        }
-
-        .control-btn.active {
-            background: rgba(255, 255, 255, 0.5);
-            border-color: white;
-        }
-
-        .time-tracker {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .tracker-title {
-            color: #ffffff;
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            text-align: center;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-        }
-
-        .tracker-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .tracker-btn {
-            padding: 18px 20px;
-            border-radius: 15px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .tracker-btn.start {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .tracker-btn.start:hover {
-            background: linear-gradient(135deg, #e74c5c 0%, #d32f3f 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(220, 53, 69, 0.4);
-        }
-
-        .tracker-btn.stop {
-            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .tracker-btn.stop:hover {
-            background: linear-gradient(135deg, #34ce57 0%, #2e9b40 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(40, 167, 69, 0.4);
-        }
-
-        .tracker-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        .tracker-btn.active {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
-            50% { box-shadow: 0 8px 50px rgba(220, 53, 69, 0.6); }
-        }
-
-        .lost-time-display {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .lost-time-label {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-
-        .lost-time-value {
-            color: #ffc107;
-            font-size: 2.5rem;
-            font-weight: 700;
-            font-family: 'Montserrat', sans-serif;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .lost-time-current {
-            color: #dc3545;
-            font-size: 1.2rem;
-            margin-top: 10px;
-            font-weight: 600;
-            display: none;
-        }
-
-        .lost-time-current.visible {
-            display: block;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-label {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.8rem;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            color: #ffffff;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
+        /* ==================== КАРТОЧКА ЦИТАТЫ ==================== */
         .quote-card {
             position: relative;
-            border-radius: 20px;
+            border-radius: 15px;
             padding: 0;
-            margin-bottom: 25px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             overflow: hidden;
-            min-height: 400px;
+            flex: 1;
+            min-height: 0;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -258,9 +65,9 @@
         .quote-card::after {
             content: '"';
             position: absolute;
-            top: 30px;
-            left: 30px;
-            font-size: 12rem;
+            top: 10px;
+            left: 15px;
+            font-size: 6rem;
             font-family: 'Playfair Display', serif;
             color: rgba(255, 255, 255, 0.15);
             line-height: 1;
@@ -270,22 +77,22 @@
         .quote-content {
             position: relative;
             z-index: 3;
-            padding: 40px;
+            padding: 20px;
         }
 
         .quote-text {
             font-family: 'Playfair Display', serif;
             font-style: italic;
-            font-size: 1.8rem;
+            font-size: 1.3rem;
             color: #ffffff;
-            line-height: 1.6;
-            margin-bottom: 20px;
+            line-height: 1.5;
+            margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
 
         .quote-author {
             color: rgba(255, 255, 255, 0.9);
-            font-size: 1.2rem;
+            font-size: 0.95rem;
             text-align: right;
             font-weight: 600;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
@@ -297,13 +104,13 @@
 
         .translation-badge {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 10px;
+            right: 10px;
             background: rgba(255, 193, 7, 0.9);
             color: #000;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
             font-weight: 700;
             z-index: 4;
             display: none;
@@ -313,53 +120,42 @@
             display: block;
         }
 
-        .buttons-grid {
+        /* ==================== КНОПКИ ==================== */
+        .main-buttons {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
         .btn {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
             border: none;
-            padding: 16px 20px;
-            border-radius: 15px;
+            padding: 12px 15px;
+            border-radius: 12px;
             color: #ffffff;
             font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .btn:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
         }
 
         .btn:active {
             transform: translateY(0);
-        }
-
-        .btn-primary {
-            grid-column: span 2;
-            background: rgba(255, 255, 255, 0.3);
-            font-size: 1.15rem;
-            padding: 18px;
-        }
-
-        .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.45);
         }
 
         .btn:disabled {
@@ -367,64 +163,126 @@
             cursor: not-allowed;
         }
 
-        .history-panel {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-        }
-
-        .history-panel.active {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        .history-item {
+        /* ==================== ТРЕКЕР ВРЕМЕНИ ==================== */
+        .time-tracker {
             background: rgba(255, 255, 255, 0.15);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .tracker-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tracker-btn {
+            padding: 12px 15px;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .history-item:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateX(5px);
+        .tracker-btn.start {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
-        .history-item:last-child {
-            margin-bottom: 0;
+        .tracker-btn.start:hover {
+            background: linear-gradient(135deg, #e74c5c 0%, #d32f3f 100%);
+            transform: translateY(-2px);
         }
 
-        .history-text {
+        .tracker-btn.stop {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .tracker-btn.stop:hover {
+            background: linear-gradient(135deg, #34ce57 0%, #2e9b40 100%);
+            transform: translateY(-2px);
+        }
+
+        .tracker-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .tracker-btn.active {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 4px 25px rgba(220, 53, 69, 0.6); }
+        }
+
+        .lost-time-display {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .lost-time-value {
+            color: #ffc107;
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px;
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.65rem;
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
             color: #ffffff;
-            font-size: 0.95rem;
-            margin-bottom: 5px;
-            font-style: italic;
-        }
-
-        .history-author {
-            color: rgba(255, 255, 255, 0.8);
             font-size: 0.85rem;
             font-weight: 600;
         }
 
+        /* ==================== УВЕДОМЛЕНИЯ ==================== */
         .toast {
             position: fixed;
-            bottom: 30px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: rgba(40, 167, 69, 0.95);
             color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
+            padding: 12px 25px;
+            border-radius: 25px;
             font-weight: 600;
+            font-size: 0.9rem;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             opacity: 0;
             transition: all 0.4s ease;
@@ -438,17 +296,6 @@
 
         .toast.error {
             background: rgba(220, 53, 69, 0.95);
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         @keyframes fadeIn {
@@ -486,18 +333,18 @@
         }
 
         .spinner {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-top: 4px solid #fff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .loading-text {
             color: white;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
         }
 
@@ -506,75 +353,23 @@
             100% { transform: rotate(360deg); }
         }
 
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .quote-text {
-                font-size: 1.4rem;
-            }
-
-            .quote-card {
-                min-height: 350px;
-            }
-
-            .quote-content {
-                padding: 30px 25px;
-            }
-
-            .buttons-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .btn-primary {
-                grid-column: span 1;
-            }
-
-            .tracker-buttons {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .lost-time-value {
-                font-size: 2rem;
-            }
-        }
-
-        .history-panel::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .history-panel::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-
-        .history-panel::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-        }
-
         /* PWA Install Banner */
         .install-banner {
             position: fixed;
-            bottom: 20px;
+            bottom: 10px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: rgba(30, 60, 114, 0.95);
             color: white;
-            padding: 15px 25px;
-            border-radius: 15px;
+            padding: 10px 20px;
+            border-radius: 12px;
             display: none;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             z-index: 999;
             transition: all 0.4s ease;
+            font-size: 0.85rem;
         }
 
         .install-banner.show {
@@ -585,11 +380,12 @@
         .install-banner button {
             background: #28a745;
             border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 6px 15px;
+            border-radius: 8px;
             color: white;
             font-weight: 600;
             cursor: pointer;
+            font-size: 0.8rem;
         }
 
         .install-banner button.close {
@@ -601,96 +397,71 @@
 <body>
     <!-- PWA Install Banner -->
     <div class="install-banner" id="installBanner">
-        <span>📲 Установить приложение</span>
-        <button onclick="installApp()">Установить</button>
+        <span>📲 Установить</span>
+        <button onclick="installApp()">OK</button>
         <button class="close" onclick="closeInstallBanner()">✕</button>
     </div>
 
     <div class="loading" id="loading">
         <div class="spinner"></div>
-        <div class="loading-text" id="loadingText">Загружаем вдохновение...</div>
+        <div class="loading-text" id="loadingText">Загрузка...</div>
     </div>
 
-    <div class="container">
-        <div class="header">
-            <h1>✨ Мотивирующие Цитаты</h1>
-            <p>Цитаты + Трекер потерянного времени 🌐</p>
-        </div>
-
-        <div class="controls">
-            <button class="control-btn active" onclick="setLanguage('ru')" id="btnRu">🇷🇺 Русский</button>
-            <button class="control-btn" onclick="setLanguage('en')" id="btnEn">🇬 English</button>
-            <button class="control-btn" onclick="toggleAutoTranslate()" id="btnAuto">🔄 Автоперевод: ВКЛ</button>
-        </div>
-
-        <div class="quote-card" id="quoteCard">
-            <div class="translation-badge" id="transBadge">ПЕРЕВЕДЕНО</div>
-            <div class="quote-content">
-                <div class="quote-text" id="quoteText">
-                    Нажмите «Новая цитата», чтобы начать!
-                </div>
-                <div class="quote-author" id="quoteAuthor">
-                    Автор
-                </div>
+    <!-- ==================== КАРТОЧКА ЦИТАТЫ ==================== -->
+    <div class="quote-card" id="quoteCard">
+        <div class="translation-badge" id="transBadge">ПЕРЕВЕДЕНО</div>
+        <div class="quote-content">
+            <div class="quote-text" id="quoteText">
+                Нажмите «Новая цитата», чтобы начать!
             </div>
-        </div>
-
-        <div class="buttons-grid">
-            <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">
-                🎲 Новая цитата и фон
-            </button>
-            <button class="btn" onclick="copyText()" id="copyBtn">
-                📋 Текст
-            </button>
-            <button class="btn" onclick="downloadImage()" id="downloadBtn">
-                💾 Скачать картинку
-            </button>
-            <button class="btn" onclick="toggleHistory()">
-                📜 История просмотров
-            </button>
-        </div>
-
-        <div class="history-panel" id="historyPanel">
-            <h3 style="color: #ffffff; margin-bottom: 15px;">📚 История цитат</h3>
-            <div id="historyList"></div>
-        </div>
-
-        <div class="time-tracker">
-            <div class="tracker-title">⏱️ Трекер потерянного времени</div>
-            
-            <div class="tracker-buttons">
-                <button class="tracker-btn start" id="btnStart" onclick="startTimer()">
-                    🔴 Вызвал руководитель
-                </button>
-                <button class="tracker-btn stop" id="btnStop" onclick="stopTimer()" disabled>
-                    🟢 Пришёл на место
-                </button>
-            </div>
-
-            <div class="lost-time-display">
-                <div class="lost-time-label">⏱️ Потеряно всего:</div>
-                <div class="lost-time-value" id="totalLostTime">00:00:00</div>
-                <div class="lost-time-current" id="currentSession">Текущая сессия: 00:00</div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-label">📅 Сегодня</div>
-                    <div class="stat-value" id="statToday">0 мин</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">📊 Неделя</div>
-                    <div class="stat-value" id="statWeek">0 мин</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">📈 Всего</div>
-                    <div class="stat-value" id="statTotal">0 мин</div>
-                </div>
+            <div class="quote-author" id="quoteAuthor">
+                Автор
             </div>
         </div>
     </div>
 
-    <div class="toast" id="toast">Скопировано в буфер!</div>
+    <!-- ==================== КНОПКИ ==================== -->
+    <div class="main-buttons">
+        <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">
+            🎲 Новая
+        </button>
+        <button class="btn" onclick="downloadImage()" id="downloadBtn">
+            💾 Скачать
+        </button>
+    </div>
+
+    <!-- ==================== ТРЕКЕР ВРЕМЕНИ ==================== -->
+    <div class="time-tracker">
+        <div class="tracker-buttons">
+            <button class="tracker-btn start" id="btnStart" onclick="startTimer()">
+                🔴 Ушел
+            </button>
+            <button class="tracker-btn stop" id="btnStop" onclick="stopTimer()" disabled>
+                🟢 Пришел
+            </button>
+        </div>
+
+        <div class="lost-time-display">
+            <div class="lost-time-value" id="totalLostTime">00:00:00</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-label">Сегодня</div>
+                <div class="stat-value" id="statToday">0 мин</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Неделя</div>
+                <div class="stat-value" id="statWeek">0 мин</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Всего</div>
+                <div class="stat-value" id="statTotal">0 мин</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Скопировано!</div>
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
@@ -707,7 +478,6 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response: ${outcome}`);
                 deferredPrompt = null;
                 closeInstallBanner();
             }
@@ -726,9 +496,7 @@
             });
         }
 
-        // ==================== ВСЕ ОСТАЛЬНЫЕ ФУНКЦИИ ====================
-        // (Вставьте сюда весь JavaScript из вашего текущего файла)
-        
+        // ==================== РЕЗЕРВНЫЕ ЦИТАТЫ ====================
         const fallbackQuotes = [
             { text: "Единственный способ сделать выдающуюся работу — любить то, что ты делаешь.", author: "Стив Джобс", originalLang: 'ru' },
             { text: "Верь, что ты можешь, и ты уже на полпути.", author: "Теодор Рузвельт", originalLang: 'ru' },
@@ -747,6 +515,7 @@
             { text: "Стремитесь не к успеху, а к ценностям, которые он дает.", author: "Альберт Эйнштейн", originalLang: 'ru' }
         ];
 
+        // ==================== СПИСОК API ДЛЯ ЦИТАТ ====================
         const quoteAPIs = [
             {
                 name: 'ZenQuotes',
@@ -777,12 +546,10 @@
             }
         ];
 
-        let history = JSON.parse(localStorage.getItem('quoteHistory')) || [];
+        // ==================== ПЕРЕМЕННЫЕ ====================
         let currentQuote = null;
         let currentBg = '';
         let isOnline = navigator.onLine;
-        let currentLang = 'ru';
-        let autoTranslate = true;
         let timerInterval = null;
         let timerStartTime = null;
         let isTimerRunning = false;
@@ -791,6 +558,7 @@
             sessions: []
         };
 
+        // ==================== ПРОВЕРКА СТАТУСА ПОДКЛЮЧЕНИЯ ====================
         window.addEventListener('online', updateOnlineStatus);
         window.addEventListener('offline', updateOnlineStatus);
 
@@ -798,9 +566,9 @@
             isOnline = navigator.onLine;
         }
 
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         document.addEventListener('DOMContentLoaded', () => {
             updateOnlineStatus();
-            renderHistory();
             loadRandomBackground();
             updateTimeDisplay();
             updateStats();
@@ -816,6 +584,7 @@
             }
         });
 
+        // ==================== ЗАГРУЗКА СЛУЧАЙНОГО ФОНА ====================
         function loadRandomBackground() {
             const picsumUrl = `https://picsum.photos/1920/1080?random=${Date.now()}`;
             
@@ -836,12 +605,13 @@
             });
         }
 
+        // ==================== ЗАГРУЗКА ЦИТАТЫ С ПЕРЕБОРОМ API ====================
         async function fetchQuoteFromAPI() {
             const loadingText = document.getElementById('loadingText');
             
             for (const api of quoteAPIs) {
                 try {
-                    loadingText.textContent = `Загружаем из ${api.name}...`;
+                    loadingText.textContent = `Загрузка...`;
                     
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -858,18 +628,17 @@
                     const data = await response.json();
                     const quote = api.parse(data);
                     
-                    console.log(`✅ Цитата загружена из ${api.name}`);
                     return quote;
                     
                 } catch (error) {
-                    console.warn(`❌ ${api.name} не сработал:`, error.message);
+                    console.warn(`${api.name} не сработал:`, error.message);
                 }
             }
             
-            console.log('⚠️ Все API не доступны, используем локальные цитаты');
             return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
         }
 
+        // ==================== ПЕРЕВОД ТЕКСТА ====================
         async function translateText(text, from = 'en', to = 'ru') {
             if (from === to) return text;
             
@@ -886,31 +655,13 @@
                     throw new Error('Translation failed');
                 }
             } catch (error) {
-                console.error('Translation error:', error);
                 return text;
             }
         }
 
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.getElementById('btnRu').classList.toggle('active', lang === 'ru');
-            document.getElementById('btnEn').classList.toggle('active', lang === 'en');
-            
-            if (currentQuote) {
-                displayQuote(currentQuote);
-            }
-        }
-
-        function toggleAutoTranslate() {
-            autoTranslate = !autoTranslate;
-            const btn = document.getElementById('btnAuto');
-            btn.textContent = `🔄 Автоперевод: ${autoTranslate ? 'ВКЛ' : 'ВЫКЛ'}`;
-            btn.classList.toggle('active', autoTranslate);
-        }
-
+        // ==================== ГЕНЕРАЦИЯ ЦИТАТЫ ====================
         async function generateQuote() {
             const loading = document.getElementById('loading');
-            const loadingText = document.getElementById('loadingText');
             const generateBtn = document.getElementById('generateBtn');
             
             loading.classList.add('active');
@@ -919,34 +670,27 @@
             try {
                 let quoteData = await fetchQuoteFromAPI();
                 
-                loadingText.textContent = 'Загружаем красивый фон...';
                 await loadRandomBackground();
                 
-                if (autoTranslate && quoteData.originalLang === 'en' && currentLang === 'ru' && isOnline) {
-                    loadingText.textContent = 'Переводим на русский...';
-                    try {
-                        const translated = await translateText(quoteData.text, 'en', 'ru');
-                        quoteData.translatedText = translated;
-                    } catch (transError) {
-                        console.warn('Перевод не сработал:', transError);
-                        quoteData.translatedText = null;
-                    }
+                const loadingText = document.getElementById('loadingText');
+                loadingText.textContent = 'Перевод...';
+                
+                try {
+                    const translated = await translateText(quoteData.text, 'en', 'ru');
+                    quoteData.translatedText = translated;
+                } catch (transError) {
+                    quoteData.translatedText = null;
                 }
                 
                 currentQuote = quoteData;
                 displayQuote(quoteData);
-                addToHistory(quoteData);
                 
-                if (!isOnline) showToast('Работа в офлайн режиме', 'error');
+                if (!isOnline) showToast('Офлайн режим', 'error');
                 
             } catch (error) {
-                console.error('Ошибка:', error);
-                showToast('Используем резервные цитаты', 'error');
-                
                 const quoteData = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
                 currentQuote = quoteData;
                 displayQuote(quoteData);
-                addToHistory(quoteData);
                 
             } finally {
                 loading.classList.remove('active');
@@ -954,6 +698,7 @@
             }
         }
 
+        // ==================== ОТОБРАЖЕНИЕ ЦИТАТЫ ====================
         function displayQuote(quote) {
             const quoteText = document.getElementById('quoteText');
             const quoteAuthor = document.getElementById('quoteAuthor');
@@ -967,46 +712,18 @@
             let displayText = quote.text;
             let isTranslated = false;
             
-            if (quote.originalLang === 'en') {
-                if (currentLang === 'ru' && quote.translatedText) {
-                    displayText = quote.translatedText;
-                    isTranslated = true;
-                } else if (currentLang === 'en') {
-                    displayText = quote.text;
-                    isTranslated = false;
-                }
-            } else {
-                if (currentLang === 'en' && autoTranslate && isOnline) {
-                    translateText(quote.text, 'ru', 'en').then(translated => {
-                        quoteText.textContent = translated;
-                    });
-                    isTranslated = true;
-                } else {
-                    displayText = quote.text;
-                    isTranslated = currentLang === 'en';
-                }
+            if (quote.originalLang === 'en' && quote.translatedText) {
+                displayText = quote.translatedText;
+                isTranslated = true;
             }
             
             quoteText.textContent = displayText;
             quoteAuthor.textContent = quote.author;
             
-            transBadge.classList.toggle('visible', isTranslated && currentLang === 'ru');
+            transBadge.classList.toggle('visible', isTranslated);
         }
 
-        function copyText() {
-            if (!currentQuote) {
-                showToast("Сначала получите цитату!", 'error');
-                return;
-            }
-            
-            const text = `"${document.getElementById('quoteText').textContent}" — ${currentQuote.author}`;
-            navigator.clipboard.writeText(text).then(() => {
-                showToast("Скопировано в буфер!");
-            }).catch(() => {
-                showToast("Ошибка копирования!", 'error');
-            });
-        }
-
+        // ==================== СКАЧИВАНИЕ КАРТИНКИ ====================
         function downloadImage() {
             if (!currentQuote) {
                 showToast("Сначала получите цитату!", 'error');
@@ -1026,46 +743,13 @@
                 link.download = `цитата-${Date.now()}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                showToast("Картинка скачана!");
+                showToast("Скачано!");
             }).catch(() => {
-                showToast("Ошибка при скачивании!", 'error');
+                showToast("Ошибка!", 'error');
             });
         }
 
-        function addToHistory(quote) {
-            history.unshift(quote);
-            if (history.length > 10) history.pop();
-            localStorage.setItem('quoteHistory', JSON.stringify(history));
-            renderHistory();
-        }
-
-        function renderHistory() {
-            const historyList = document.getElementById('historyList');
-            if (history.length === 0) {
-                historyList.innerHTML = '<p style="color: rgba(255,255,255,0.8); text-align: center;">История пуста</p>';
-                return;
-            }
-            historyList.innerHTML = history.map((item, index) => `
-                <div class="history-item" onclick="loadFromHistory(${index})">
-                    <div class="history-text">"${item.text.substring(0, 60)}${item.text.length > 60 ? '...' : ''}"</div>
-                    <div class="history-author">${item.author}</div>
-                </div>
-            `).join('');
-        }
-
-        function loadFromHistory(index) {
-            const quote = history[index];
-            currentQuote = quote;
-            displayQuote(quote);
-            showToast("Цитата загружена!");
-            toggleHistory();
-        }
-
-        function toggleHistory() {
-            const panel = document.getElementById('historyPanel');
-            panel.classList.toggle('active');
-        }
-
+        // ==================== УВЕДОМЛЕНИЯ ====================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -1076,9 +760,11 @@
             setTimeout(() => {
                 toast.classList.remove('show');
                 toast.classList.remove('error');
-            }, 3000);
+            }, 2000);
         }
 
+        // ==================== ТРЕКЕР ВРЕМЕНИ ====================
+        
         function formatTime(seconds) {
             const hrs = Math.floor(seconds / 3600);
             const mins = Math.floor((seconds % 3600) / 60);
@@ -1132,19 +818,16 @@
             document.getElementById('btnStart').disabled = true;
             document.getElementById('btnStop').disabled = false;
             document.getElementById('btnStart').classList.add('active');
-            document.getElementById('currentSession').classList.add('visible');
             
             startTimerDisplay();
             
-            showToast('Таймер запущен! Время пошло...', 'success');
+            showToast('Таймер запущен!');
         }
 
         function startTimerDisplay() {
-            const currentDisplay = document.getElementById('currentSession');
-            
             timerInterval = setInterval(() => {
                 const elapsed = Math.floor((Date.now() - timerStartTime) / 1000);
-                currentDisplay.textContent = `Текущая сессия: ${formatTimeShort(elapsed)}`;
+                document.getElementById('totalLostTime').textContent = formatTimeShort(elapsed);
             }, 1000);
         }
 
@@ -1174,13 +857,11 @@
             document.getElementById('btnStart').disabled = false;
             document.getElementById('btnStop').disabled = true;
             document.getElementById('btnStart').classList.remove('active');
-            document.getElementById('currentSession').classList.remove('visible');
-            document.getElementById('currentSession').textContent = 'Текущая сессия: 00:00';
             
             updateTimeDisplay();
             updateStats();
             
-            showToast(`Записано ${formatTimeShort(duration)} потерянного времени`, 'success');
+            showToast(`Записано ${formatTimeShort(duration)}`);
         }
 
         window.addEventListener('beforeunload', () => {
