@@ -9,7 +9,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Цитаты">
     
-    <!-- Шрифты -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <title>Цитаты и Время</title>
@@ -68,13 +67,20 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+            background-color: #000;
+        }
+
+        .card-bg-layer {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-size: cover;
             background-position: center;
-            background-image: url('https://picsum.photos/1080/1920');
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            transition: all 0.5s ease;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            z-index: 0;
         }
+
+        .card-bg-layer.fade-out { opacity: 0; }
 
         .quote-card::before {
             content: '';
@@ -88,6 +94,12 @@
             position: relative;
             z-index: 3;
             padding: 24px;
+            transition: opacity 1.2s ease, transform 1.2s ease;
+        }
+
+        .quote-content.hidden-content {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
         }
 
         .quote-text {
@@ -109,11 +121,49 @@
 
         .quote-author::before { content: '— '; }
 
-        .main-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+        .card-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
         }
+
+        .card-loader.active { opacity: 1; }
+
+        .spinner-dots { display: flex; gap: 6px; margin-bottom: 10px; }
+
+        .dot {
+            width: 8px; height: 8px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        .loader-text {
+            color: white; font-size: 0.75rem;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            opacity: 0.9;
+            text-align: center;
+            max-width: 200px;
+            line-height: 1.4;
+        }
+
+        .main-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
         .btn {
             background: var(--button-bg);
@@ -127,13 +177,11 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
         .btn:active { transform: scale(0.95); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .time-tracker {
             background: var(--card-bg);
@@ -142,21 +190,12 @@
             border: 1px solid var(--card-border);
         }
 
-        .tracker-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
+        .tracker-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 
         .tracker-btn {
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            color: white;
+            padding: 14px; border-radius: 14px;
+            font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; border: none; color: white;
         }
 
         .tracker-btn.start { background: var(--accent-red); box-shadow: 0 4px 15px var(--glow-red); }
@@ -172,39 +211,24 @@
             margin: 5px 0 15px 0;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
         .stat-item {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 8px;
-            border-radius: 12px;
+            text-align: center; background: rgba(0, 0, 0, 0.2);
+            padding: 8px; border-radius: 12px;
         }
 
         .stat-label { font-size: 0.65rem; color: var(--text-secondary); text-transform: uppercase; }
         .stat-value { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
 
         .toast {
-            position: fixed;
-            bottom: 30px; left: 50%;
+            position: fixed; bottom: 30px; left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: #333; color: white;
             padding: 12px 24px; border-radius: 30px;
             transition: 0.4s; z-index: 1000;
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
-
-        .loading {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 2000;
-            display: none; justify-content: center; align-items: center; flex-direction: column;
-            color: white;
-        }
-        .loading.active { display: flex; }
         
         .theme-toggle {
             position: absolute; top: 20px; right: 20px;
@@ -212,19 +236,24 @@
             border: 1px solid var(--card-border);
             border-radius: 50%; width: 44px; height: 44px;
             cursor: pointer; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
         }
     </style>
 </head>
 <body>
     <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
 
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p>Ищем вдохновение...</p>
-    </div>
-
     <div class="quote-card" id="quoteCard">
-        <div class="quote-content">
+        <div class="card-bg-layer" id="bgLayer" style="background-image: url('https://picsum.photos/1080/1920');"></div>
+        <div id="cardLoader" class="card-loader">
+            <div class="spinner-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="loader-text" id="loaderText">Ищем мудрость...</div>
+        </div>
+        <div class="quote-content" id="quoteContent">
             <div class="quote-text" id="quoteText">Время — это то, чего мы хотим больше всего и используем хуже всего.</div>
             <div class="quote-author" id="quoteAuthor">Уильям Пенн</div>
         </div>
@@ -242,18 +271,9 @@
         </div>
         <div class="lost-time-value" id="currentSessionDisplay">00:00</div>
         <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-label">Сегодня</div>
-                <div class="stat-value" id="statToday">0м</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">Неделя</div>
-                <div class="stat-value" id="statWeek">0м</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">Всего</div>
-                <div class="stat-value" id="statTotal">0м</div>
-            </div>
+            <div class="stat-item"><div class="stat-label">Сегодня</div><div class="stat-value" id="statToday">0м</div></div>
+            <div class="stat-item"><div class="stat-label">Неделя</div><div class="stat-value" id="statWeek">0м</div></div>
+            <div class="stat-item"><div class="stat-label">Всего</div><div class="stat-value" id="statTotal">0м</div></div>
         </div>
     </div>
 
@@ -261,40 +281,26 @@
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        // ==================== ДАННЫЕ ====================
         const fallbackQuotes = [
-            { text: "Дисциплина — это решение делать то, чего очень не хочется делать, чтобы достичь того, чего очень хочется достичь.", author: "Джон Максвелл", originalLang: "ru" },
-            { text: "Время не любит, когда его тратят впустую.", author: "Генри Форд", originalLang: "ru" },
-            { text: "Ваше время ограничено, не тратьте его, живя чужой жизнью.", author: "Стив Джобс", originalLang: "ru" },
-            { text: "Тот, кто позволяет ускользнуть часу времени, еще не понял ценности жизни.", author: "Чарльз Дарвин", originalLang: "ru" }
+            { text: "Дисциплина — это решение делать то, чего очень не хочется, чтобы достичь того, чего очень хочется.", author: "Джон Максвелл" },
+            { text: "Время не любит, когда его тратят впустую.", author: "Генри Форд" },
+            { text: "Ваше время ограничено, не тратьте его, живя чужой жизнью.", author: "Стив Джобс" },
+            { text: "Тот, кто позволяет ускользнуть часу времени, еще не понял ценности жизни.", author: "Чарльз Дарвин" },
+            { text: "Сложные времена рождают сильных людей.", author: "Платон" },
+            { text: "Путь в тысячу ли начинается с первого шага.", author: "Лао-Цзы" },
+            { text: "Успех — это способность идти от одной неудачи к другой, не теряя энтузиазма.", author: "Уинстон Черчилль" }
         ];
 
-        const quoteAPIs = [
-            {
-                name: 'Forismatic (RU)',
-                // Используем CORS-прокси для обхода HTTP/HTTPS блокировки
-                url: `https://api.allorigins.win/get?url=${encodeURIComponent('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=ru&key=' + Math.floor(Math.random() * 1000000))}`,
-                parse: (data) => {
-                    const json = JSON.parse(data.contents);
-                    return {
-                        text: json.quoteText,
-                        author: json.quoteAuthor.trim() || 'Неизвестный автор',
-                        originalLang: 'ru'
-                    };
-                }
-            },
-            {
-                name: 'Quotable',
-                url: 'https://api.quotable.io/random',
-                parse: (data) => ({
-                    text: data.content,
-                    author: data.author,
-                    originalLang: 'en'
-                })
-            }
+        const loadingPhrases = [
+            "Ищем мудрость...",
+            "Собираем мысли...",
+            "Настраиваемся на успех...",
+            "Ловим вдохновение...",
+            "Загружаем энергию...",
+            "Создаем момент...",
+            "Фокусируем внимание..."
         ];
 
-        // ==================== ТАЙМЕР ====================
         let timerInterval = null;
         let timerStartTime = null;
         let timeData = JSON.parse(localStorage.getItem('timeTrackerData')) || { totalSeconds: 0, sessions: [] };
@@ -308,25 +314,19 @@
         function updateStats() {
             const now = new Date();
             const todayStr = now.toDateString();
-            
             let todaySec = 0;
-            timeData.sessions.forEach(s => {
-                if (new Date(s.start).toDateString() === todayStr) todaySec += s.duration;
-            });
-
+            timeData.sessions.forEach(s => { if (new Date(s.start).toDateString() === todayStr) todaySec += s.duration; });
             document.getElementById('statToday').textContent = Math.round(todaySec / 60) + 'м';
             document.getElementById('statTotal').textContent = Math.round(timeData.totalSeconds / 60) + 'м';
-            document.getElementById('statWeek').textContent = Math.round(timeData.totalSeconds / 60) + 'м'; // Упрощено
+            document.getElementById('statWeek').textContent = Math.round(timeData.totalSeconds / 60) + 'м';
         }
 
         function startTimer() {
-            playTone(300, 150, 0.3); // Звук входа
+            playTone(300, 150, 0.3);
             timerStartTime = Date.now();
             localStorage.setItem('activeTimer', timerStartTime);
-            
             document.getElementById('btnStart').disabled = true;
             document.getElementById('btnStop').disabled = false;
-            
             timerInterval = setInterval(() => {
                 const elapsed = Math.floor((Date.now() - timerStartTime) / 1000);
                 document.getElementById('currentSessionDisplay').textContent = formatDisplay(elapsed);
@@ -334,62 +334,93 @@
         }
 
         function stopTimer() {
-            playTone(500, 800, 0.4); // Звук выхода
+            playTone(500, 800, 0.4);
             const duration = Math.floor((Date.now() - timerStartTime) / 1000);
-            
             timeData.sessions.push({ start: timerStartTime, duration: duration });
             timeData.totalSeconds += duration;
-            
             localStorage.setItem('timeTrackerData', JSON.stringify(timeData));
             localStorage.removeItem('activeTimer');
-            
             clearInterval(timerInterval);
             document.getElementById('btnStart').disabled = false;
             document.getElementById('btnStop').disabled = true;
             document.getElementById('currentSessionDisplay').textContent = "00:00";
-            
             updateStats();
-            showToast(`Потеряно ${Math.round(duration/60)} мин.`);
+            showToast(`Записано: ${Math.round(duration/60)} мин.`);
         }
 
-        // ==================== ЦИТАТЫ ====================
-        async function generateQuote() {
-            const loader = document.getElementById('loading');
-            loader.classList.add('active');
-            
+        async function preloadImage(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(url);
+                img.onerror = () => resolve(`https://picsum.photos/1080/1920?sig=${Date.now()}`);
+                img.src = url;
+            });
+        }
+
+        async function fetchQuoteWithTimeout(timeout = 5000) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeout);
             try {
-                // 1. Меняем фон
-                const imgUrl = `https://picsum.photos/1080/1920?random=${Date.now()}`;
-                document.getElementById('quoteCard').style.backgroundImage = `url(${imgUrl})`;
-
-                // 2. Берем API
-                const api = quoteAPIs[Math.floor(Math.random() * quoteAPIs.length)];
-                const response = await fetch(api.url);
-                const data = await response.json();
-                const quote = api.parse(data);
-
-                document.getElementById('quoteText').textContent = quote.text;
-                document.getElementById('quoteAuthor').textContent = quote.author;
+                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=ru&key=' + Math.floor(Math.random() * 999999))}`, { signal: controller.signal });
+                clearTimeout(id);
+                const jsonWrapper = await res.json();
+                return JSON.parse(jsonWrapper.contents);
             } catch (e) {
-                const f = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
-                document.getElementById('quoteText').textContent = f.text;
-                document.getElementById('quoteAuthor').textContent = f.author;
-            } finally {
-                loader.classList.remove('active');
+                console.warn("API Timeout or error, using fallback");
+                return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
             }
         }
 
-        // ==================== СЛУЖЕБНОЕ ====================
+        async function generateQuote() {
+            const btn = document.getElementById('generateBtn');
+            const content = document.getElementById('quoteContent');
+            const loader = document.getElementById('cardLoader');
+            const bgLayer = document.getElementById('bgLayer');
+            const loaderText = document.getElementById('loaderText');
+
+            // Устанавливаем случайную фразу
+            loaderText.textContent = loadingPhrases[Math.floor(Math.random() * loadingPhrases.length)];
+
+            btn.disabled = true;
+            content.classList.add('hidden-content');
+            bgLayer.classList.add('fade-out');
+
+            setTimeout(async () => {
+                loader.classList.add('active');
+
+                const [quoteData, finalImageUrl] = await Promise.all([
+                    fetchQuoteWithTimeout(6000),
+                    preloadImage(`https://picsum.photos/1080/1920?random=${Date.now()}`),
+                    new Promise(r => setTimeout(r, 2500))
+                ]);
+
+                bgLayer.style.backgroundImage = `url(${finalImageUrl})`;
+                document.getElementById('quoteText').textContent = quoteData.quoteText || quoteData.text;
+                document.getElementById('quoteAuthor').textContent = quoteData.quoteAuthor || quoteData.author || 'Неизвестный автор';
+
+                loader.classList.remove('active');
+                
+                setTimeout(() => {
+                    bgLayer.classList.remove('fade-out');
+                    content.classList.remove('hidden-content');
+                    btn.disabled = false;
+                }, 300);
+
+            }, 800); 
+        }
+
         function playTone(freq1, freq2, duration) {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const g = ctx.createGain();
-            osc.connect(g); g.connect(ctx.destination);
-            osc.frequency.setValueAtTime(freq1, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(freq2, ctx.currentTime + duration);
-            g.gain.setValueAtTime(0.1, ctx.currentTime);
-            g.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
-            osc.start(); osc.stop(ctx.currentTime + duration);
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const g = ctx.createGain();
+                osc.connect(g); g.connect(ctx.destination);
+                osc.frequency.setValueAtTime(freq1, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(freq2, ctx.currentTime + duration);
+                g.gain.setValueAtTime(0.1, ctx.currentTime);
+                g.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
+                osc.start(); osc.stop(ctx.currentTime + duration);
+            } catch(e) {}
         }
 
         function toggleTheme() {
@@ -406,13 +437,12 @@
         function downloadImage() {
             html2canvas(document.getElementById('quoteCard')).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'quote.png';
+                link.download = `quote_${Date.now()}.png`;
                 link.href = canvas.toDataURL();
                 link.click();
             });
         }
 
-        // Авто-восстановление при перезагрузке
         window.onload = () => {
             updateStats();
             const saved = localStorage.getItem('activeTimer');
