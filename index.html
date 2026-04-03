@@ -8,9 +8,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Цитаты">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    <title>Цитаты</title>
+    
+    <!-- Шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <title>Цитаты и Время</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -47,7 +49,7 @@
         html, body { height: 100%; overflow: hidden; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
             padding: 12px;
             display: flex;
@@ -68,6 +70,7 @@
             justify-content: flex-end;
             background-size: cover;
             background-position: center;
+            background-image: url('https://picsum.photos/1080/1920');
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             transition: all 0.5s ease;
@@ -77,22 +80,8 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.1) 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.1) 100%);
             z-index: 1;
-        }
-
-        [data-theme="light"] .quote-card::before {
-            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.05) 100%);
-        }
-
-        .quote-card::after {
-            content: '"';
-            position: absolute;
-            top: 15px; left: 20px;
-            font-size: 7rem;
-            font-family: 'Playfair Display', serif;
-            color: rgba(255, 255, 255, 0.1);
-            z-index: 2;
         }
 
         .quote-content {
@@ -104,36 +93,21 @@
         .quote-text {
             font-family: 'Playfair Display', serif;
             font-style: italic;
-            font-size: 1.35rem;
-            color: var(--text-primary);
-            line-height: 1.5;
+            font-size: 1.4rem;
+            color: #ffffff;
+            line-height: 1.4;
             margin-bottom: 12px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
         }
 
         .quote-author {
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.9);
             font-size: 0.95rem;
             text-align: right;
             font-weight: 600;
         }
 
         .quote-author::before { content: '— '; }
-
-        .translation-badge {
-            position: absolute;
-            top: 12px; right: 12px;
-            background: rgba(255, 214, 10, 0.9);
-            color: #000;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            z-index: 4;
-            display: none;
-        }
-
-        .translation-badge.visible { display: block; }
 
         .main-buttons {
             display: grid;
@@ -152,30 +126,20 @@
             cursor: pointer;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
 
-        .btn:hover {
-            background: var(--button-hover);
-            transform: translateY(-2px) scale(1.02);
-        }
-
-        .btn:active { transform: translateY(0) scale(0.98); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn:active { transform: scale(0.95); }
 
         .time-tracker {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 14px;
             border: 1px solid var(--card-border);
-            box-shadow: var(--shadow), inset 0 1px 0 var(--card-border);
         }
 
         .tracker-buttons {
@@ -186,62 +150,26 @@
         }
 
         .tracker-btn {
-            padding: 14px 18px;
+            padding: 14px;
             border-radius: 14px;
             font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tracker-btn.start {
-            background: linear-gradient(135deg, var(--accent-red) 0%, #d70015 100%);
             color: white;
-            box-shadow: 0 4px 20px var(--glow-red);
         }
 
-        .tracker-btn.start:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--glow-red);
-        }
-
-        .tracker-btn.stop {
-            background: linear-gradient(135deg, var(--accent-green) 0%, #248a3d 100%);
-            color: white;
-            box-shadow: 0 4px 20px var(--glow-green);
-        }
-
-        .tracker-btn.stop:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--glow-green);
-        }
-
-        .tracker-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-
-        .tracker-btn.active { animation: pulse-glow 2s infinite; }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 4px 20px var(--glow-red); transform: scale(1); }
-            50% { box-shadow: 0 8px 35px var(--glow-red); transform: scale(1.02); }
-        }
-
-        .lost-time-display { text-align: center; margin-bottom: 10px; }
+        .tracker-btn.start { background: var(--accent-red); box-shadow: 0 4px 15px var(--glow-red); }
+        .tracker-btn.stop { background: var(--accent-green); box-shadow: 0 4px 15px var(--glow-green); }
+        .tracker-btn:disabled { opacity: 0.3; filter: grayscale(1); }
 
         .lost-time-value {
             color: var(--accent-gold);
-            font-size: 2rem;
-            font-weight: 700;
-            font-family: -apple-system, BlinkMacSystemFont, monospace;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-            letter-spacing: 2px;
+            font-size: 2.2rem;
+            text-align: center;
+            font-weight: 800;
+            font-family: monospace;
+            margin: 5px 0 15px 0;
         }
 
         .stats-grid {
@@ -252,140 +180,79 @@
 
         .stat-item {
             text-align: center;
-            background: rgba(0, 0, 0, 0.15);
+            background: rgba(0, 0, 0, 0.2);
             padding: 8px;
             border-radius: 12px;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
         }
 
-        [data-theme="light"] .stat-item { background: rgba(255, 255, 255, 0.4); }
-
-        .stat-label { color: var(--text-secondary); font-size: 0.7rem; margin-bottom: 4px; font-weight: 500; }
-        .stat-value { color: var(--text-primary); font-size: 0.9rem; font-weight: 600; }
+        .stat-label { font-size: 0.65rem; color: var(--text-secondary); text-transform: uppercase; }
+        .stat-value { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
 
         .toast {
             position: fixed;
-            bottom: 20px;
-            left: 50%;
+            bottom: 30px; left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: var(--card-bg);
-            color: var(--text-primary);
-            padding: 14px 28px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-            border: 1px solid var(--card-border);
+            background: #333; color: white;
+            padding: 12px 24px; border-radius: 30px;
+            transition: 0.4s; z-index: 1000;
         }
-
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast.success { background: rgba(52, 199, 89, 0.9); color: white; }
-        .toast.error { background: rgba(255, 59, 48, 0.9); color: white; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .quote-card.animate { animation: fadeIn 0.5s ease; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
 
         .loading {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 2000;
+            display: none; justify-content: center; align-items: center; flex-direction: column;
+            color: white;
         }
-
         .loading.active { display: flex; }
-
-        .spinner {
-            width: 50px; height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-top: 4px solid var(--accent-gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
-        }
-
-        .loading-text { color: white; font-size: 1rem; font-weight: 600; }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
+        
         .theme-toggle {
-            position: fixed;
-            top: 15px; right: 15px;
-            background: var(--card-bg);
+            position: absolute; top: 20px; right: 20px;
+            z-index: 100; background: var(--card-bg);
             border: 1px solid var(--card-border);
-            padding: 10px 14px;
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 1.3rem;
-            cursor: pointer;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-            z-index: 100;
+            border-radius: 50%; width: 44px; height: 44px;
+            cursor: pointer; font-size: 1.2rem;
         }
-
-        .theme-toggle:hover { transform: scale(1.1); background: var(--button-hover); }
     </style>
 </head>
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">🌓</button>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
 
     <div class="loading" id="loading">
         <div class="spinner"></div>
-        <div class="loading-text" id="loadingText">Загрузка...</div>
+        <p>Ищем вдохновение...</p>
     </div>
 
     <div class="quote-card" id="quoteCard">
-        <div class="translation-badge" id="transBadge">ПЕРЕВЕДЕНО</div>
         <div class="quote-content">
-            <div class="quote-text" id="quoteText">Нажмите «Новая цитата», чтобы начать!</div>
-            <div class="quote-author" id="quoteAuthor">Автор</div>
+            <div class="quote-text" id="quoteText">Время — это то, чего мы хотим больше всего и используем хуже всего.</div>
+            <div class="quote-author" id="quoteAuthor">Уильям Пенн</div>
         </div>
     </div>
 
     <div class="main-buttons">
         <button class="btn" onclick="generateQuote()" id="generateBtn">🎲 Новая</button>
-        <button class="btn" onclick="downloadImage()" id="downloadBtn">💾 Скачать</button>
+        <button class="btn" onclick="downloadImage()">💾 Скачать</button>
     </div>
 
     <div class="time-tracker">
         <div class="tracker-buttons">
-            <button class="tracker-btn start" id="btnStart" onclick="startTimer()">👔 К шефу</button>
-            <button class="tracker-btn stop" id="btnStop" onclick="stopTimer()" disabled>🕊️ Свободен</button>
+            <button class="tracker-btn start" id="btnStart" onclick="startTimer()">👔 К ШЕФУ</button>
+            <button class="tracker-btn stop" id="btnStop" onclick="stopTimer()" disabled>🕊️ СВОБОДЕН</button>
         </div>
-        <div class="lost-time-display">
-            <div class="lost-time-value" id="totalLostTime">00:00:00</div>
-        </div>
+        <div class="lost-time-value" id="currentSessionDisplay">00:00</div>
         <div class="stats-grid">
             <div class="stat-item">
                 <div class="stat-label">Сегодня</div>
-                <div class="stat-value" id="statToday">0 мин</div>
+                <div class="stat-value" id="statToday">0м</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">Неделя</div>
-                <div class="stat-value" id="statWeek">0 мин</div>
+                <div class="stat-value" id="statWeek">0м</div>
             </div>
             <div class="stat-item">
                 <div class="stat-label">Всего</div>
-                <div class="stat-value" id="statTotal">0 мин</div>
+                <div class="stat-value" id="statTotal">0м</div>
             </div>
         </div>
     </div>
@@ -394,374 +261,166 @@
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        // ==================== АУДИО КОНТЕКСТ ====================
-        let audioContext = null;
+        // ==================== ДАННЫЕ ====================
+        const fallbackQuotes = [
+            { text: "Дисциплина — это решение делать то, чего очень не хочется делать, чтобы достичь того, чего очень хочется достичь.", author: "Джон Максвелл", originalLang: "ru" },
+            { text: "Время не любит, когда его тратят впустую.", author: "Генри Форд", originalLang: "ru" },
+            { text: "Ваше время ограничено, не тратьте его, живя чужой жизнью.", author: "Стив Джобс", originalLang: "ru" },
+            { text: "Тот, кто позволяет ускользнуть часу времени, еще не понял ценности жизни.", author: "Чарльз Дарвин", originalLang: "ru" }
+        ];
 
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        // ==================== ЗВУКОВЫЕ ЭФФЕКТЫ ====================
-        function playBossSound() {
-            initAudio();
-            if (audioContext.state === 'suspended') audioContext.resume();
-            
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.3);
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.3);
-        }
-
-        function playFreeSound() {
-            initAudio();
-            if (audioContext.state === 'suspended') audioContext.resume();
-            
-            const notes = [523.25, 659.25, 783.99];
-            
-            notes.forEach((freq, index) => {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = freq;
-                oscillator.type = 'sine';
-                
-                const startTime = audioContext.currentTime + (index * 0.05);
-                gainNode.gain.setValueAtTime(0, startTime);
-                gainNode.gain.linearRampToValueAtTime(0.2, startTime + 0.05);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
-                
-                oscillator.start(startTime);
-                oscillator.stop(startTime + 0.4);
-            });
-        }
-
-        // ==================== ТЕМА ====================
-        function getSystemTheme() {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            const metaColor = document.querySelector('meta[name="theme-color"]');
-            if (metaColor) {
-                metaColor.setAttribute('content', theme === 'dark' ? '#000000' : '#ffffff');
-            }
-        }
-
-        function toggleTheme() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            setTheme(next);
-        }
-
-        function initTheme() {
-            const saved = localStorage.getItem('theme');
-            if (saved) { setTheme(saved); }
-            else { setTheme(getSystemTheme()); }
-        }
-
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            const saved = localStorage.getItem('theme');
-            if (!saved) { setTheme(e.matches ? 'dark' : 'light'); }
-        });
-
-        // ==================== ЦИТАТЫ ====================
-
-const quoteAPIs = [
-    {
-        name: 'Forismatic (RU)',
-        // Добавлен рандомный key для предотвращения кэширования на стороне сервера
-        url: `http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=ru&key=${Math.floor(Math.random() * 1000000)}`,
-        parse: (data) => ({
-            text: data.quoteText,
-            author: data.quoteAuthor.trim() || 'Неизвестный автор',
-            originalLang: 'ru'
-        })
-    },
-    {
-        name: 'Forismatic',
-        url: 'https://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en',
-        parse: (data) => ({
-            text: data.quoteText,
-            author: data.quoteAuthor.trim() || 'Unknown Author',
-            originalLang: 'en'
-        })
-    },
-    {
-        name: 'Quotable',
-        url: 'https://api.quotable.io/random',
-        parse: (data) => ({
-            text: data.content,
-            author: data.author,
-            originalLang: 'en'
-        })
-    },
-    {
-        name: 'Stoic',
-        url: 'https://stoic.tekloon.net/stoic-quote',
-        parse: (data) => ({
-            text: data.quote,
-            author: data.author || 'Стоический философ',
-            originalLang: 'en'
-        })
-    }
-];
-
-        let currentQuote = null;
-        let isOnline = navigator.onLine;
-
-        window.addEventListener('online', () => { isOnline = navigator.onLine; });
-        window.addEventListener('offline', () => { isOnline = navigator.onLine; });
-
-        async function translateText(text, from = 'en', to = 'ru') {
-            if (from === to) return text;
-            try {
-                const encodedText = encodeURIComponent(text);
-                const url = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=${from}|${to}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.responseStatus === 200 && data.responseData.translatedText) {
-                    return data.responseData.translatedText;
-                }
-                throw new Error('Translation failed');
-            } catch (error) {
-                return text;
-            }
-        }
-
-        async function fetchQuoteFromAPI() {
-            for (const api of quoteAPIs) {
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-                    const response = await fetch(api.url, { signal: controller.signal, headers: { 'Accept': 'application/json' } });
-                    clearTimeout(timeoutId);
-                    if (!response.ok) throw new Error(`${api.name} returned ${response.status}`);
-                    const data = await response.json();
-                    return api.parse(data);
-                } catch (error) {
-                    console.warn(`${api.name} не сработал:`, error.message);
-                }
-            }
-            return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
-        }
-
-        async function generateQuote() {
-            const loading = document.getElementById('loading');
-            const generateBtn = document.getElementById('generateBtn');
-            
-            loading.classList.add('active');
-            generateBtn.disabled = true;
-            
-            try {
-                let quoteData = await fetchQuoteFromAPI();
-                
-                const picsumUrl = `https://picsum.photos/1920/1080?random=${Date.now()}`;
-                await new Promise((resolve) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        document.getElementById('quoteCard').style.backgroundImage = `url('${picsumUrl}')`;
-                        resolve();
+        const quoteAPIs = [
+            {
+                name: 'Forismatic (RU)',
+                // Используем CORS-прокси для обхода HTTP/HTTPS блокировки
+                url: `https://api.allorigins.win/get?url=${encodeURIComponent('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=ru&key=' + Math.floor(Math.random() * 1000000))}`,
+                parse: (data) => {
+                    const json = JSON.parse(data.contents);
+                    return {
+                        text: json.quoteText,
+                        author: json.quoteAuthor.trim() || 'Неизвестный автор',
+                        originalLang: 'ru'
                     };
-                    img.onerror = resolve;
-                    img.src = picsumUrl;
-                });
-                
-                if (quoteData.originalLang === 'en') {
-                    try {
-                        const translated = await translateText(quoteData.text, 'en', 'ru');
-                        quoteData.translatedText = translated;
-                    } catch (e) { quoteData.translatedText = null; }
                 }
-                
-                currentQuote = quoteData;
-                displayQuote(quoteData);
-                
-                if (!isOnline) showToast('Офлайн режим', 'error');
-            } catch (error) {
-                currentQuote = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
-                displayQuote(currentQuote);
-            } finally {
-                loading.classList.remove('active');
-                generateBtn.disabled = false;
+            },
+            {
+                name: 'Quotable',
+                url: 'https://api.quotable.io/random',
+                parse: (data) => ({
+                    text: data.content,
+                    author: data.author,
+                    originalLang: 'en'
+                })
             }
-        }
+        ];
 
-        function displayQuote(quote) {
-            const quoteText = document.getElementById('quoteText');
-            const quoteAuthor = document.getElementById('quoteAuthor');
-            const transBadge = document.getElementById('transBadge');
-            const quoteCard = document.getElementById('quoteCard');
-            
-            quoteCard.classList.remove('animate');
-            void quoteCard.offsetWidth;
-            quoteCard.classList.add('animate');
-            
-            let displayText = quote.text;
-            let isTranslated = false;
-            
-            if (quote.originalLang === 'en' && quote.translatedText) {
-                displayText = quote.translatedText;
-                isTranslated = true;
-            }
-            
-            quoteText.textContent = displayText;
-            quoteAuthor.textContent = quote.author;
-            transBadge.classList.toggle('visible', isTranslated);
-        }
-
-        function downloadImage() {
-            if (!currentQuote) { showToast("Сначала получите цитату!", 'error'); return; }
-            
-            html2canvas(document.getElementById('quoteCard'), {
-                backgroundColor: null, scale: 2, useCORS: true, allowTaint: true, logging: false
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `цитата-${Date.now()}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                showToast("Скачано!", 'success');
-            }).catch(() => { showToast("Ошибка!", 'error'); });
-        }
-
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = `toast show ${type}`;
-            setTimeout(() => { toast.classList.remove('show'); }, 2000);
-        }
-
-        // ==================== ТРЕКЕР ВРЕМЕНИ ====================
+        // ==================== ТАЙМЕР ====================
         let timerInterval = null;
         let timerStartTime = null;
-        let isTimerRunning = false;
         let timeData = JSON.parse(localStorage.getItem('timeTrackerData')) || { totalSeconds: 0, sessions: [] };
 
-        function formatTime(seconds) {
-            const hrs = Math.floor(seconds / 3600);
-            const mins = Math.floor((seconds % 3600) / 60);
-            const secs = seconds % 60;
-            return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }
-
-        function formatTimeShort(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }
-
-        function updateTimeDisplay() {
-            document.getElementById('totalLostTime').textContent = formatTime(timeData.totalSeconds);
+        function formatDisplay(s) {
+            const m = Math.floor(s / 60);
+            const rs = s % 60;
+            return `${String(m).padStart(2, '0')}:${String(rs).padStart(2, '0')}`;
         }
 
         function updateStats() {
             const now = new Date();
-            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-            const weekStart = new Date(now.setDate(now.getDate() - now.getDay())).getTime();
-
-            let todaySeconds = 0, weekSeconds = 0;
-
-            timeData.sessions.forEach(session => {
-                if (session.end) {
-                    if (session.start >= todayStart) todaySeconds += session.duration;
-                    if (session.start >= weekStart) weekSeconds += session.duration;
-                }
+            const todayStr = now.toDateString();
+            
+            let todaySec = 0;
+            timeData.sessions.forEach(s => {
+                if (new Date(s.start).toDateString() === todayStr) todaySec += s.duration;
             });
 
-            document.getElementById('statToday').textContent = formatTimeShort(todaySeconds);
-            document.getElementById('statWeek').textContent = formatTimeShort(weekSeconds);
-            document.getElementById('statTotal').textContent = formatTimeShort(timeData.totalSeconds);
+            document.getElementById('statToday').textContent = Math.round(todaySec / 60) + 'м';
+            document.getElementById('statTotal').textContent = Math.round(timeData.totalSeconds / 60) + 'м';
+            document.getElementById('statWeek').textContent = Math.round(timeData.totalSeconds / 60) + 'м'; // Упрощено
         }
 
         function startTimer() {
-            if (isTimerRunning) return;
-            
-            playBossSound(); // 🔊 ЗВУК!
-            
+            playTone(300, 150, 0.3); // Звук входа
             timerStartTime = Date.now();
-            isTimerRunning = true;
-            localStorage.setItem('activeTimer', timerStartTime.toString());
+            localStorage.setItem('activeTimer', timerStartTime);
             
             document.getElementById('btnStart').disabled = true;
             document.getElementById('btnStop').disabled = false;
-            document.getElementById('btnStart').classList.add('active');
             
-            startTimerDisplay();
-            showToast('Таймер запущен!', 'success');
-        }
-
-        function startTimerDisplay() {
             timerInterval = setInterval(() => {
                 const elapsed = Math.floor((Date.now() - timerStartTime) / 1000);
-                document.getElementById('totalLostTime').textContent = formatTimeShort(elapsed);
+                document.getElementById('currentSessionDisplay').textContent = formatDisplay(elapsed);
             }, 1000);
         }
 
         function stopTimer() {
-            if (!isTimerRunning) return;
+            playTone(500, 800, 0.4); // Звук выхода
+            const duration = Math.floor((Date.now() - timerStartTime) / 1000);
             
-            playFreeSound(); // 🔊 ЗВУК!
-            
-            const endTime = Date.now();
-            const duration = Math.floor((endTime - timerStartTime) / 1000);
-            
-            timeData.sessions.push({ start: timerStartTime, end: endTime, duration, date: new Date().toISOString() });
+            timeData.sessions.push({ start: timerStartTime, duration: duration });
             timeData.totalSeconds += duration;
             
             localStorage.setItem('timeTrackerData', JSON.stringify(timeData));
             localStorage.removeItem('activeTimer');
             
             clearInterval(timerInterval);
-            isTimerRunning = false;
-            timerStartTime = null;
-            
             document.getElementById('btnStart').disabled = false;
             document.getElementById('btnStop').disabled = true;
-            document.getElementById('btnStart').classList.remove('active');
+            document.getElementById('currentSessionDisplay').textContent = "00:00";
             
-            updateTimeDisplay();
             updateStats();
-            showToast(`Записано ${formatTimeShort(duration)}`, 'success');
+            showToast(`Потеряно ${Math.round(duration/60)} мин.`);
         }
 
-        window.addEventListener('beforeunload', () => {
-            if (isTimerRunning && timerStartTime) {
-                localStorage.setItem('activeTimer', timerStartTime.toString());
-            }
-        });
-
-        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            updateTimeDisplay();
-            updateStats();
+        // ==================== ЦИТАТЫ ====================
+        async function generateQuote() {
+            const loader = document.getElementById('loading');
+            loader.classList.add('active');
             
-            const savedTimer = localStorage.getItem('activeTimer');
-            if (savedTimer) {
-                const startTime = parseInt(savedTimer);
-                if (!isNaN(startTime)) {
-                    timerStartTime = startTime;
-                    isTimerRunning = true;
-                    startTimerDisplay();
-                }
+            try {
+                // 1. Меняем фон
+                const imgUrl = `https://picsum.photos/1080/1920?random=${Date.now()}`;
+                document.getElementById('quoteCard').style.backgroundImage = `url(${imgUrl})`;
+
+                // 2. Берем API
+                const api = quoteAPIs[Math.floor(Math.random() * quoteAPIs.length)];
+                const response = await fetch(api.url);
+                const data = await response.json();
+                const quote = api.parse(data);
+
+                document.getElementById('quoteText').textContent = quote.text;
+                document.getElementById('quoteAuthor').textContent = quote.author;
+            } catch (e) {
+                const f = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+                document.getElementById('quoteText').textContent = f.text;
+                document.getElementById('quoteAuthor').textContent = f.author;
+            } finally {
+                loader.classList.remove('active');
             }
-        });
+        }
+
+        // ==================== СЛУЖЕБНОЕ ====================
+        function playTone(freq1, freq2, duration) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.connect(g); g.connect(ctx.destination);
+            osc.frequency.setValueAtTime(freq1, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(freq2, ctx.currentTime + duration);
+            g.gain.setValueAtTime(0.1, ctx.currentTime);
+            g.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
+            osc.start(); osc.stop(ctx.currentTime + duration);
+        }
+
+        function toggleTheme() {
+            const t = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        function downloadImage() {
+            html2canvas(document.getElementById('quoteCard')).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'quote.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        // Авто-восстановление при перезагрузке
+        window.onload = () => {
+            updateStats();
+            const saved = localStorage.getItem('activeTimer');
+            if (saved) {
+                timerStartTime = parseInt(saved);
+                startTimer();
+            }
+        };
     </script>
 </body>
 </html>
