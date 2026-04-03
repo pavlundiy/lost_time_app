@@ -11,16 +11,10 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
     <title>Цитаты</title>
-    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            /* Тёмная тема (по умолчанию) */
             --bg-gradient-1: #1a1a2e;
             --bg-gradient-2: #16213e;
             --card-bg: rgba(255, 255, 255, 0.08);
@@ -37,7 +31,6 @@
             --glow-green: rgba(52, 199, 89, 0.4);
         }
 
-        /* Светлая тема */
         [data-theme="light"] {
             --bg-gradient-1: #f0f4f8;
             --bg-gradient-2: #d9e2ec;
@@ -47,21 +40,14 @@
             --text-secondary: rgba(26, 26, 46, 0.7);
             --button-bg: rgba(255, 255, 255, 0.5);
             --button-hover: rgba(255, 255, 255, 0.7);
-            --accent-red: #ff3b30;
-            --accent-green: #34c759;
             --accent-gold: #b8860b;
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            --glow-red: rgba(255, 59, 48, 0.3);
-            --glow-green: rgba(52, 199, 89, 0.3);
         }
 
-        html, body {
-            height: 100%;
-            overflow: hidden;
-        }
+        html, body { height: 100%; overflow: hidden; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
             background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
             padding: 12px;
             display: flex;
@@ -70,13 +56,10 @@
             transition: all 0.5s ease;
         }
 
-        /* ==================== КАРТОЧКА ЦИТАТЫ (GLASSMORPHISM) ==================== */
         .quote-card {
             position: relative;
             border-radius: 24px;
-            padding: 0;
-            box-shadow: var(--shadow), 
-                        inset 0 1px 0 var(--card-border);
+            box-shadow: var(--shadow), inset 0 1px 0 var(--card-border);
             overflow: hidden;
             flex: 1;
             min-height: 0;
@@ -85,42 +68,30 @@
             justify-content: flex-end;
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            transition: all 0.5s ease;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
+            transition: all 0.5s ease;
         }
 
         .quote-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to top, 
-                rgba(0, 0, 0, 0.85) 0%, 
-                rgba(0, 0, 0, 0.5) 50%, 
-                rgba(0, 0, 0, 0.1) 100%);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.1) 100%);
             z-index: 1;
         }
 
         [data-theme="light"] .quote-card::before {
-            background: linear-gradient(to top, 
-                rgba(0, 0, 0, 0.6) 0%, 
-                rgba(0, 0, 0, 0.2) 50%, 
-                rgba(0, 0, 0, 0.05) 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.05) 100%);
         }
 
         .quote-card::after {
             content: '"';
             position: absolute;
-            top: 15px;
-            left: 20px;
+            top: 15px; left: 20px;
             font-size: 7rem;
             font-family: 'Playfair Display', serif;
             color: rgba(255, 255, 255, 0.1);
-            line-height: 1;
             z-index: 2;
         }
 
@@ -138,11 +109,6 @@
             line-height: 1.5;
             margin-bottom: 12px;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-            font-weight: 500;
-        }
-
-        [data-theme="light"] .quote-text {
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .quote-author {
@@ -150,17 +116,13 @@
             font-size: 0.95rem;
             text-align: right;
             font-weight: 600;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
         }
 
-        .quote-author::before {
-            content: '— ';
-        }
+        .quote-author::before { content: '— '; }
 
         .translation-badge {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 12px; right: 12px;
             background: rgba(255, 214, 10, 0.9);
             color: #000;
             padding: 4px 10px;
@@ -169,14 +131,10 @@
             font-weight: 700;
             z-index: 4;
             display: none;
-            backdrop-filter: blur(10px);
         }
 
-        .translation-badge.visible {
-            display: block;
-        }
+        .translation-badge.visible { display: block; }
 
-        /* ==================== КНОПКИ (GLASSMORPHISM) ==================== */
         .main-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -189,7 +147,6 @@
             padding: 16px 20px;
             border-radius: 16px;
             color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -206,19 +163,11 @@
         .btn:hover {
             background: var(--button-hover);
             transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .btn:active {
-            transform: translateY(0) scale(0.98);
-        }
+        .btn:active { transform: translateY(0) scale(0.98); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* ==================== ТРЕКЕР ВРЕМЕНИ (GLASSMORPHISM) ==================== */
         .time-tracker {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
@@ -226,8 +175,7 @@
             border-radius: 20px;
             padding: 14px;
             border: 1px solid var(--card-border);
-            box-shadow: var(--shadow),
-                        inset 0 1px 0 var(--card-border);
+            box-shadow: var(--shadow), inset 0 1px 0 var(--card-border);
         }
 
         .tracker-buttons {
@@ -240,7 +188,6 @@
         .tracker-btn {
             padding: 14px 18px;
             border-radius: 14px;
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
             font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
@@ -253,22 +200,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
-        }
-
-        .tracker-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tracker-btn:hover::before {
-            opacity: 1;
         }
 
         .tracker-btn.start {
@@ -293,43 +224,24 @@
             box-shadow: 0 8px 30px var(--glow-green);
         }
 
-        .tracker-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
+        .tracker-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
-        .tracker-btn.active {
-            animation: pulse-glow 2s infinite;
-        }
+        .tracker-btn.active { animation: pulse-glow 2s infinite; }
 
         @keyframes pulse-glow {
-            0%, 100% { 
-                box-shadow: 0 4px 20px var(--glow-red);
-                transform: scale(1);
-            }
-            50% { 
-                box-shadow: 0 8px 35px var(--glow-red);
-                transform: scale(1.02);
-            }
+            0%, 100% { box-shadow: 0 4px 20px var(--glow-red); transform: scale(1); }
+            50% { box-shadow: 0 8px 35px var(--glow-red); transform: scale(1.02); }
         }
 
-        .lost-time-display {
-            text-align: center;
-            margin-bottom: 10px;
-        }
+        .lost-time-display { text-align: center; margin-bottom: 10px; }
 
         .lost-time-value {
             color: var(--accent-gold);
             font-size: 2rem;
             font-weight: 700;
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', monospace;
+            font-family: -apple-system, BlinkMacSystemFont, monospace;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
             letter-spacing: 2px;
-        }
-
-        [data-theme="light"] .lost-time-value {
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .stats-grid {
@@ -347,24 +259,11 @@
             backdrop-filter: blur(10px);
         }
 
-        [data-theme="light"] .stat-item {
-            background: rgba(255, 255, 255, 0.4);
-        }
+        [data-theme="light"] .stat-item { background: rgba(255, 255, 255, 0.4); }
 
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
+        .stat-label { color: var(--text-secondary); font-size: 0.7rem; margin-bottom: 4px; font-weight: 500; }
+        .stat-value { color: var(--text-primary); font-size: 0.9rem; font-weight: 600; }
 
-        .stat-value {
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        /* ==================== УВЕДОМЛЕНИЯ ==================== */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -376,8 +275,7 @@
             border-radius: 20px;
             font-weight: 600;
             font-size: 0.95rem;
-            box-shadow: var(--shadow),
-                        0 0 0 1px var(--card-border);
+            box-shadow: var(--shadow);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             opacity: 0;
@@ -386,42 +284,21 @@
             border: 1px solid var(--card-border);
         }
 
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        .toast.success {
-            background: rgba(52, 199, 89, 0.9);
-            color: white;
-        }
-
-        .toast.error {
-            background: rgba(255, 59, 48, 0.9);
-            color: white;
-        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast.success { background: rgba(52, 199, 89, 0.9); color: white; }
+        .toast.error { background: rgba(255, 59, 48, 0.9); color: white; }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .quote-card.animate {
-            animation: fadeIn 0.5s ease;
-        }
+        .quote-card.animate { animation: fadeIn 0.5s ease; }
 
         .loading {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.9);
             display: none;
             justify-content: center;
@@ -431,13 +308,10 @@
             backdrop-filter: blur(10px);
         }
 
-        .loading.active {
-            display: flex;
-        }
+        .loading.active { display: flex; }
 
         .spinner {
-            width: 50px;
-            height: 50px;
+            width: 50px; height: 50px;
             border: 4px solid rgba(255, 255, 255, 0.2);
             border-top: 4px solid var(--accent-gold);
             border-radius: 50%;
@@ -445,64 +319,16 @@
             margin-bottom: 15px;
         }
 
-        .loading-text {
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-        }
+        .loading-text { color: white; font-size: 1rem; font-weight: 600; }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* PWA Install Banner */
-        .install-banner {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--card-bg);
-            color: var(--text-primary);
-            padding: 12px 20px;
-            border-radius: 16px;
-            display: none;
-            align-items: center;
-            gap: 12px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(20px);
-            z-index: 999;
-            transition: all 0.4s ease;
-            font-size: 0.9rem;
-            border: 1px solid var(--card-border);
-        }
-
-        .install-banner.show {
-            display: flex;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .install-banner button {
-            background: var(--accent-green);
-            border: none;
-            padding: 8px 18px;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .install-banner button.close {
-            background: transparent;
-            border: 1px solid var(--card-border);
-        }
-
-        /* Theme Toggle Button */
         .theme-toggle {
             position: fixed;
-            top: 15px;
-            right: 15px;
+            top: 15px; right: 15px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             padding: 10px 14px;
@@ -516,68 +342,38 @@
             z-index: 100;
         }
 
-        .theme-toggle:hover {
-            transform: scale(1.1);
-            background: var(--button-hover);
-        }
+        .theme-toggle:hover { transform: scale(1.1); background: var(--button-hover); }
     </style>
 </head>
 <body>
-    <!-- Theme Toggle -->
-    <button class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">
-        🌓
-    </button>
-
-    <!-- PWA Install Banner -->
-    <div class="install-banner" id="installBanner">
-        <span>📲 Установить</span>
-        <button onclick="installApp()">OK</button>
-        <button class="close" onclick="closeInstallBanner()">✕</button>
-    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">🌓</button>
 
     <div class="loading" id="loading">
         <div class="spinner"></div>
         <div class="loading-text" id="loadingText">Загрузка...</div>
     </div>
 
-    <!-- ==================== КАРТОЧКА ЦИТАТЫ ==================== -->
     <div class="quote-card" id="quoteCard">
         <div class="translation-badge" id="transBadge">ПЕРЕВЕДЕНО</div>
         <div class="quote-content">
-            <div class="quote-text" id="quoteText">
-                Нажмите «Новая цитата», чтобы начать!
-            </div>
-            <div class="quote-author" id="quoteAuthor">
-                Автор
-            </div>
+            <div class="quote-text" id="quoteText">Нажмите «Новая цитата», чтобы начать!</div>
+            <div class="quote-author" id="quoteAuthor">Автор</div>
         </div>
     </div>
 
-    <!-- ==================== КНОПКИ ==================== -->
     <div class="main-buttons">
-        <button class="btn" onclick="generateQuote()" id="generateBtn">
-            🎲 Новая
-        </button>
-        <button class="btn" onclick="downloadImage()" id="downloadBtn">
-            💾 Скачать
-        </button>
+        <button class="btn" onclick="generateQuote()" id="generateBtn">🎲 Новая</button>
+        <button class="btn" onclick="downloadImage()" id="downloadBtn">💾 Скачать</button>
     </div>
 
-    <!-- ==================== ТРЕКЕР ВРЕМЕНИ ==================== -->
     <div class="time-tracker">
         <div class="tracker-buttons">
-            <button class="tracker-btn start" id="btnStart" onclick="startTimer()">
-                👔 К шефу
-            </button>
-            <button class="tracker-btn stop" id="btnStop" onclick="stopTimer()" disabled>
-                🕊️ Свободен
-            </button>
+            <button class="tracker-btn start" id="btnStart" onclick="startTimer()">👔 К шефу</button>
+            <button class="tracker-btn stop" id="btnStop" onclick="stopTimer()" disabled>🕊️ Свободен</button>
         </div>
-
         <div class="lost-time-display">
             <div class="lost-time-value" id="totalLostTime">00:00:00</div>
         </div>
-
         <div class="stats-grid">
             <div class="stat-item">
                 <div class="stat-label">Сегодня</div>
@@ -598,246 +394,154 @@
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        // ==================== PWA INSTALL ====================
-        let deferredPrompt;
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBanner').classList.add('show');
-        });
+        // ==================== АУДИО КОНТЕКСТ ====================
+        let audioContext = null;
 
-        async function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                deferredPrompt = null;
-                closeInstallBanner();
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
         }
 
-        function closeInstallBanner() {
-            document.getElementById('installBanner').classList.remove('show');
+        // ==================== ЗВУКОВЫЕ ЭФФЕКТЫ ====================
+        function playBossSound() {
+            initAudio();
+            if (audioContext.state === 'suspended') audioContext.resume();
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.3);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
         }
 
-        // Регистрация Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(reg => console.log('SW registered:', reg))
-                    .catch(err => console.log('SW error:', err));
+        function playFreeSound() {
+            initAudio();
+            if (audioContext.state === 'suspended') audioContext.resume();
+            
+            const notes = [523.25, 659.25, 783.99];
+            
+            notes.forEach((freq, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = freq;
+                oscillator.type = 'sine';
+                
+                const startTime = audioContext.currentTime + (index * 0.05);
+                gainNode.gain.setValueAtTime(0, startTime);
+                gainNode.gain.linearRampToValueAtTime(0.2, startTime + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
+                
+                oscillator.start(startTime);
+                oscillator.stop(startTime + 0.4);
             });
         }
 
-        // ==================== ТЕМА (СИСТЕМНАЯ + РУЧНАЯ) ====================
-        
-        // Проверка системной темы
+        // ==================== ТЕМА ====================
         function getSystemTheme() {
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
 
-        // Установка темы
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
-            
-            // Обновление meta theme-color
             const metaColor = document.querySelector('meta[name="theme-color"]');
             if (metaColor) {
                 metaColor.setAttribute('content', theme === 'dark' ? '#000000' : '#ffffff');
             }
         }
 
-        // Переключение темы
         function toggleTheme() {
             const current = document.documentElement.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
             setTheme(next);
         }
 
-        // Инициализация темы
         function initTheme() {
             const saved = localStorage.getItem('theme');
-            if (saved) {
-                setTheme(saved);
-            } else {
-                setTheme(getSystemTheme());
-            }
+            if (saved) { setTheme(saved); }
+            else { setTheme(getSystemTheme()); }
         }
 
-        // Слушатель изменений системной темы
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
             const saved = localStorage.getItem('theme');
-            if (!saved) {
-                setTheme(e.matches ? 'dark' : 'light');
-            }
+            if (!saved) { setTheme(e.matches ? 'dark' : 'light'); }
         });
 
-        // ==================== РЕЗЕРВНЫЕ ЦИТАТЫ ====================
+        // ==================== ЦИТАТЫ ====================
         const fallbackQuotes = [
             { text: "Единственный способ сделать выдающуюся работу — любить то, что ты делаешь.", author: "Стив Джобс", originalLang: 'ru' },
             { text: "Верь, что ты можешь, и ты уже на полпути.", author: "Теодор Рузвельт", originalLang: 'ru' },
             { text: "Не жди. Время никогда не будет идеальным.", author: "Наполеон Хилл", originalLang: 'ru' },
             { text: "Успех — это способность идти от неудачи к неудаче, не теряя энтузиазма.", author: "Уинстон Черчилль", originalLang: 'ru' },
-            { text: "Лучшее время, чтобы посадить дерево, было 20 лет назад. Следующее лучшее время — сегодня.", author: "Китайская пословица", originalLang: 'ru' },
-            { text: "Ваше время ограничено, не тратьте его, живя чужой жизнью.", author: "Стив Джобс", originalLang: 'ru' },
-            { text: "Победа — это ещё не всё, но желание победить — это всё.", author: "Винс Ломбарди", originalLang: 'ru' },
-            { text: "Неудача — это просто возможность начать снова, но уже более мудро.", author: "Генри Форд", originalLang: 'ru' },
-            { text: "Либо вы управляете вашим днём, либо день управляет вами.", author: "Джим Рон", originalLang: 'ru' },
-            { text: "Мечтайте по-крупному и не бойтесь мечтать.", author: "Марк Хансон", originalLang: 'ru' },
-            { text: "Сложнее всего начать действовать, все остальное зависит только от упорства.", author: "Амелия Эрхарт", originalLang: 'ru' },
-            { text: "Жизнь — это 10% того, что с вами происходит, и 90% того, как вы на это реагируете.", author: "Чарльз Свиндолл", originalLang: 'ru' },
-            { text: "Не позволяйте вчерашнему дню занимать слишком много места сегодня.", author: "Уилл Роджерс", originalLang: 'ru' },
-            { text: "Вы никогда не пересечете океан, если не наберетесь смелости потерять берег из виду.", author: "Христофор Колумб", originalLang: 'ru' },
-            { text: "Стремитесь не к успеху, а к ценностям, которые он дает.", author: "Альберт Эйнштейн", originalLang: 'ru' }
+            { text: "Лучшее время, чтобы посадить дерево, было 20 лет назад. Следующее лучшее время — сегодня.", author: "Китайская пословица", originalLang: 'ru' }
         ];
 
-        // ==================== СПИСОК API ДЛЯ ЦИТАТ ====================
         const quoteAPIs = [
             {
                 name: 'ZenQuotes',
                 url: 'https://zenquotes.io/api/random',
-                parse: (data) => ({
-                    text: data[0].q,
-                    author: data[0].a,
-                    originalLang: 'en'
-                })
+                parse: (data) => ({ text: data[0].q, author: data[0].a, originalLang: 'en' })
             },
             {
                 name: 'Quotable',
                 url: 'https://api.quotable.io/random',
-                parse: (data) => ({
-                    text: data.content,
-                    author: data.author,
-                    originalLang: 'en'
-                })
-            },
-            {
-                name: 'Stoic Quotes',
-                url: 'https://stoic.tekloon.net/stoic-quote',
-                parse: (data) => ({
-                    text: data.quote,
-                    author: data.author || 'Стоический философ',
-                    originalLang: 'en'
-                })
+                parse: (data) => ({ text: data.content, author: data.author, originalLang: 'en' })
             }
         ];
 
-        // ==================== ПЕРЕМЕННЫЕ ====================
         let currentQuote = null;
-        let currentBg = '';
         let isOnline = navigator.onLine;
-        let timerInterval = null;
-        let timerStartTime = null;
-        let isTimerRunning = false;
-        let timeData = JSON.parse(localStorage.getItem('timeTrackerData')) || {
-            totalSeconds: 0,
-            sessions: []
-        };
 
-        // ==================== ПРОВЕРКА СТАТУСА ПОДКЛЮЧЕНИЯ ====================
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
+        window.addEventListener('online', () => { isOnline = navigator.onLine; });
+        window.addEventListener('offline', () => { isOnline = navigator.onLine; });
 
-        function updateOnlineStatus() {
-            isOnline = navigator.onLine;
-        }
-
-        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            updateOnlineStatus();
-            loadRandomBackground();
-            updateTimeDisplay();
-            updateStats();
-            
-            const savedTimer = localStorage.getItem('activeTimer');
-            if (savedTimer) {
-                const startTime = parseInt(savedTimer);
-                if (!isNaN(startTime)) {
-                    timerStartTime = startTime;
-                    isTimerRunning = true;
-                    startTimerDisplay();
-                }
-            }
-        });
-
-        // ==================== ЗАГРУЗКА СЛУЧАЙНОГО ФОНА ====================
-        function loadRandomBackground() {
-            const picsumUrl = `https://picsum.photos/1920/1080?random=${Date.now()}`;
-            
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                    currentBg = picsumUrl;
-                    const quoteCard = document.getElementById('quoteCard');
-                    quoteCard.style.backgroundImage = `url('${picsumUrl}')`;
-                    resolve();
-                };
-                img.onerror = () => {
-                    const quoteCard = document.getElementById('quoteCard');
-                    quoteCard.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                    resolve();
-                };
-                img.src = picsumUrl;
-            });
-        }
-
-        // ==================== ЗАГРУЗКА ЦИТАТЫ С ПЕРЕБОРОМ API ====================
-        async function fetchQuoteFromAPI() {
-            const loadingText = document.getElementById('loadingText');
-            
-            for (const api of quoteAPIs) {
-                try {
-                    loadingText.textContent = `Загрузка...`;
-                    
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-                    
-                    const response = await fetch(api.url, { 
-                        signal: controller.signal,
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) throw new Error(`${api.name} returned ${response.status}`);
-                    
-                    const data = await response.json();
-                    const quote = api.parse(data);
-                    
-                    return quote;
-                    
-                } catch (error) {
-                    console.warn(`${api.name} не сработал:`, error.message);
-                }
-            }
-            
-            return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
-        }
-
-        // ==================== ПЕРЕВОД ТЕКСТА ====================
         async function translateText(text, from = 'en', to = 'ru') {
             if (from === to) return text;
-            
             try {
                 const encodedText = encodeURIComponent(text);
                 const url = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=${from}|${to}`;
-                
                 const response = await fetch(url);
                 const data = await response.json();
-                
                 if (data.responseStatus === 200 && data.responseData.translatedText) {
                     return data.responseData.translatedText;
-                } else {
-                    throw new Error('Translation failed');
                 }
+                throw new Error('Translation failed');
             } catch (error) {
                 return text;
             }
         }
 
-        // ==================== ГЕНЕРАЦИЯ ЦИТАТЫ ====================
+        async function fetchQuoteFromAPI() {
+            for (const api of quoteAPIs) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    const response = await fetch(api.url, { signal: controller.signal, headers: { 'Accept': 'application/json' } });
+                    clearTimeout(timeoutId);
+                    if (!response.ok) throw new Error(`${api.name} returned ${response.status}`);
+                    const data = await response.json();
+                    return api.parse(data);
+                } catch (error) {
+                    console.warn(`${api.name} не сработал:`, error.message);
+                }
+            }
+            return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+        }
+
         async function generateQuote() {
             const loading = document.getElementById('loading');
             const generateBtn = document.getElementById('generateBtn');
@@ -848,35 +552,37 @@
             try {
                 let quoteData = await fetchQuoteFromAPI();
                 
-                await loadRandomBackground();
+                const picsumUrl = `https://picsum.photos/1920/1080?random=${Date.now()}`;
+                await new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        document.getElementById('quoteCard').style.backgroundImage = `url('${picsumUrl}')`;
+                        resolve();
+                    };
+                    img.onerror = resolve;
+                    img.src = picsumUrl;
+                });
                 
-                const loadingText = document.getElementById('loadingText');
-                loadingText.textContent = 'Перевод...';
-                
-                try {
-                    const translated = await translateText(quoteData.text, 'en', 'ru');
-                    quoteData.translatedText = translated;
-                } catch (transError) {
-                    quoteData.translatedText = null;
+                if (quoteData.originalLang === 'en') {
+                    try {
+                        const translated = await translateText(quoteData.text, 'en', 'ru');
+                        quoteData.translatedText = translated;
+                    } catch (e) { quoteData.translatedText = null; }
                 }
                 
                 currentQuote = quoteData;
                 displayQuote(quoteData);
                 
                 if (!isOnline) showToast('Офлайн режим', 'error');
-                
             } catch (error) {
-                const quoteData = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
-                currentQuote = quoteData;
-                displayQuote(quoteData);
-                
+                currentQuote = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+                displayQuote(currentQuote);
             } finally {
                 loading.classList.remove('active');
                 generateBtn.disabled = false;
             }
         }
 
-        // ==================== ОТОБРАЖЕНИЕ ЦИТАТЫ ====================
         function displayQuote(quote) {
             const quoteText = document.getElementById('quoteText');
             const quoteAuthor = document.getElementById('quoteAuthor');
@@ -897,48 +603,36 @@
             
             quoteText.textContent = displayText;
             quoteAuthor.textContent = quote.author;
-            
             transBadge.classList.toggle('visible', isTranslated);
         }
 
-        // ==================== СКАЧИВАНИЕ КАРТИНКИ ====================
         function downloadImage() {
-            if (!currentQuote) {
-                showToast("Сначала получите цитату!", 'error');
-                return;
-            }
+            if (!currentQuote) { showToast("Сначала получите цитату!", 'error'); return; }
             
-            const quoteCard = document.getElementById('quoteCard');
-            
-            html2canvas(quoteCard, {
-                backgroundColor: null,
-                scale: 2,
-                useCORS: true,
-                allowTaint: true,
-                logging: false
+            html2canvas(document.getElementById('quoteCard'), {
+                backgroundColor: null, scale: 2, useCORS: true, allowTaint: true, logging: false
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `цитата-${Date.now()}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
                 showToast("Скачано!", 'success');
-            }).catch(() => {
-                showToast("Ошибка!", 'error');
-            });
+            }).catch(() => { showToast("Ошибка!", 'error'); });
         }
 
-        // ==================== УВЕДОМЛЕНИЯ ====================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.className = `toast show ${type}`;
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2000);
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
         // ==================== ТРЕКЕР ВРЕМЕНИ ====================
-        
+        let timerInterval = null;
+        let timerStartTime = null;
+        let isTimerRunning = false;
+        let timeData = JSON.parse(localStorage.getItem('timeTrackerData')) || { totalSeconds: 0, sessions: [] };
+
         function formatTime(seconds) {
             const hrs = Math.floor(seconds / 3600);
             const mins = Math.floor((seconds % 3600) / 60);
@@ -953,8 +647,7 @@
         }
 
         function updateTimeDisplay() {
-            const totalDisplay = document.getElementById('totalLostTime');
-            totalDisplay.textContent = formatTime(timeData.totalSeconds);
+            document.getElementById('totalLostTime').textContent = formatTime(timeData.totalSeconds);
         }
 
         function updateStats() {
@@ -962,17 +655,12 @@
             const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
             const weekStart = new Date(now.setDate(now.getDate() - now.getDay())).getTime();
 
-            let todaySeconds = 0;
-            let weekSeconds = 0;
+            let todaySeconds = 0, weekSeconds = 0;
 
             timeData.sessions.forEach(session => {
                 if (session.end) {
-                    if (session.start >= todayStart) {
-                        todaySeconds += session.duration;
-                    }
-                    if (session.start >= weekStart) {
-                        weekSeconds += session.duration;
-                    }
+                    if (session.start >= todayStart) todaySeconds += session.duration;
+                    if (session.start >= weekStart) weekSeconds += session.duration;
                 }
             });
 
@@ -984,9 +672,10 @@
         function startTimer() {
             if (isTimerRunning) return;
             
+            playBossSound(); // 🔊 ЗВУК!
+            
             timerStartTime = Date.now();
             isTimerRunning = true;
-            
             localStorage.setItem('activeTimer', timerStartTime.toString());
             
             document.getElementById('btnStart').disabled = true;
@@ -994,7 +683,6 @@
             document.getElementById('btnStart').classList.add('active');
             
             startTimerDisplay();
-            
             showToast('Таймер запущен!', 'success');
         }
 
@@ -1008,17 +696,12 @@
         function stopTimer() {
             if (!isTimerRunning) return;
             
+            playFreeSound(); // 🔊 ЗВУК!
+            
             const endTime = Date.now();
             const duration = Math.floor((endTime - timerStartTime) / 1000);
             
-            const session = {
-                start: timerStartTime,
-                end: endTime,
-                duration: duration,
-                date: new Date().toISOString()
-            };
-            
-            timeData.sessions.push(session);
+            timeData.sessions.push({ start: timerStartTime, end: endTime, duration, date: new Date().toISOString() });
             timeData.totalSeconds += duration;
             
             localStorage.setItem('timeTrackerData', JSON.stringify(timeData));
@@ -1034,13 +717,29 @@
             
             updateTimeDisplay();
             updateStats();
-            
             showToast(`Записано ${formatTimeShort(duration)}`, 'success');
         }
 
         window.addEventListener('beforeunload', () => {
             if (isTimerRunning && timerStartTime) {
                 localStorage.setItem('activeTimer', timerStartTime.toString());
+            }
+        });
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            updateTimeDisplay();
+            updateStats();
+            
+            const savedTimer = localStorage.getItem('activeTimer');
+            if (savedTimer) {
+                const startTime = parseInt(savedTimer);
+                if (!isNaN(startTime)) {
+                    timerStartTime = startTime;
+                    isTimerRunning = true;
+                    startTimerDisplay();
+                }
             }
         });
     </script>
