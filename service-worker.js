@@ -1,6 +1,6 @@
 const CACHE_NAME = 'quotes-app-v1';
 const ASSETS_TO_CACHE = [
-  './Мотивирующие Цитаты.html',
+  './index.html',
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@1,500&display=swap',
   'https://html2canvas.hertzen.com/dist/html2canvas.min.js'
@@ -55,7 +55,7 @@ self.addEventListener('fetch', (event) => {
       });
     }).catch(() => {
       // Офлайн - возвращаем главную страницу
-      return caches.match('./Мотивирующие Цитаты.html');
+      return caches.match('./index.html');
     })
   );
 });
