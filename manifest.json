@@ -2,7 +2,7 @@
   "name": "Мотивирующие Цитаты",
   "short_name": "Цитаты",
   "description": "Мотивирующие цитаты с трекером времени",
-  "start_url": "./Мотивирующие Цитаты.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1e3c72",
   "theme_color": "#1e3c72",
