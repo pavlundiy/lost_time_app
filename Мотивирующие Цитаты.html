@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1e3c72">
+    <meta name="description" content="Мотивирующие цитаты с трекером потерянного времени">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Цитаты">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Мотивирующие Цитаты</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+    <!-- [ОСТАЛЬНЫЕ СТИЛИ ИЗ ВАШЕГО КОДА - БЕЗ ИЗМЕНЕНИЙ] -->
+    <style>
+        /* Вставьте сюда все стили из вашего текущего HTML файла */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .container {
+            max-width: 750px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: white;
+        }
+
+        .time-tracker {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .tracker-title {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .tracker-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tracker-btn {
+            padding: 18px 20px;
+            border-radius: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .tracker-btn.start {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .tracker-btn.start:hover {
+            background: linear-gradient(135deg, #e74c5c 0%, #d32f3f 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(220, 53, 69, 0.4);
+        }
+
+        .tracker-btn.stop {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .tracker-btn.stop:hover {
+            background: linear-gradient(135deg, #34ce57 0%, #2e9b40 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(40, 167, 69, 0.4);
+        }
+
+        .tracker-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .tracker-btn.active {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 8px 50px rgba(220, 53, 69, 0.6); }
+        }
+
+        .lost-time-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .lost-time-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .lost-time-value {
+            color: #ffc107;
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .lost-time-current {
+            color: #dc3545;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .lost-time-current.visible {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .quote-card {
+            position: relative;
+            border-radius: 20px;
+            padding: 0;
+            margin-bottom: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: all 0.5s ease;
+        }
+
+        .quote-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.2) 100%);
+            z-index: 1;
+        }
+
+        .quote-card::after {
+            content: '"';
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-size: 12rem;
+            font-family: 'Playfair Display', serif;
+            color: rgba(255, 255, 255, 0.15);
+            line-height: 1;
+            z-index: 2;
+        }
+
+        .quote-content {
+            position: relative;
+            z-index: 3;
+            padding: 40px;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.8rem;
+            color: #ffffff;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .quote-author {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            text-align: right;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .quote-author::before {
+            content: '— ';
+        }
+
+        .translation-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 193, 7, 0.9);
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 4;
+            display: none;
+        }
+
+        .translation-badge.visible {
+            display: block;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 16px 20px;
+            border-radius: 15px;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            grid-column: span 2;
+            background: rgba(255, 255, 255, 0.3);
+            font-size: 1.15rem;
+            padding: 18px;
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.45);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .history-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .history-panel.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(5px);
+        }
+
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .history-text {
+            color: #ffffff;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            font-style: italic;
+        }
+
+        .history-author {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(40, 167, 69, 0.95);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: rgba(220, 53, 69, 0.95);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .quote-card.animate {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .quote-text {
+                font-size: 1.4rem;
+            }
+
+            .quote-card {
+                min-height: 350px;
+            }
+
+            .quote-content {
+                padding: 30px 25px;
+            }
+
+            .buttons-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-primary {
+                grid-column: span 1;
+            }
+
+            .tracker-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .lost-time-value {
+                font-size: 2rem;
+            }
+        }
+
+        .history-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .history-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .history-panel::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        /* PWA Install Banner */
+        .install-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(30, 60, 114, 0.95);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            transition: all 0.4s ease;
+        }
+
+        .install-banner.show {
+            display: flex;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .install-banner button {
+            background: #28a745;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .install-banner button.close {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- PWA Install Banner -->
+    <div class="install-banner" id="installBanner">
+        <span>📲 Установить приложение</span>
+        <button onclick="installApp()">Установить</button>
+        <button class="close" onclick="closeInstallBanner()">✕</button>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Загружаем вдохновение...</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>✨ Мотивирующие Цитаты</h1>
+            <p>Цитаты + Трекер потерянного времени 🌐</p>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn active" onclick="setLanguage('ru')" id="btnRu">🇷🇺 Русский</button>
+            <button class="control-btn" onclick="setLanguage('en')" id="btnEn">🇬 English</button>
+            <button class="control-btn" onclick="toggleAutoTranslate()" id="btnAuto">🔄 Автоперевод: ВКЛ</button>
+        </div>
+
+        <div class="quote-card" id="quoteCard">
+            <div class="translation-badge" id="transBadge">ПЕРЕВЕДЕНО</div>
+            <div class="quote-content">
+                <div class="quote-text" id="quoteText">
+                    Нажмите «Новая цитата», чтобы начать!
+                </div>
+                <div class="quote-author" id="quoteAuthor">
+                    Автор
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons-grid">
+            <button class="btn btn-primary" onclick="generateQuote()" id="generateBtn">
+                🎲 Новая цитата и фон
+            </button>
+            <button class="btn" onclick="copyText()" id="copyBtn">
+                📋 Текст
+            </button>
+            <button class="btn" onclick="downloadImage()" id="downloadBtn">
+                💾 Скачать картинку
+            </button>
+            <button class="btn" onclick="toggleHistory()">
+                📜 История просмотров
+            </button>
+        </div>
+
+        <div class="history-panel" id="historyPanel">
+            <h3 style="color: #ffffff; margin-bottom: 15px;">📚 История цитат</h3>
+            <div id="historyList"></div>
+        </div>
+
+        <div class="time-tracker">
+            <div class="tracker-title">⏱️ Трекер потерянного времени</div>
+            
+            <div class="tracker-buttons">
+                <button class="tracker-btn start" id="btnStart" onclick="startTimer()">
+                    🔴 Вызвал руководитель
+                </button>
+                <button class="tracker-btn stop" id="btnStop" onclick="stopTimer()" disabled>
+                    🟢 Пришёл на место
+                </button>
+            </div>
+
+            <div class="lost-time-display">
+                <div class="lost-time-label">⏱️ Потеряно всего:</div>
+                <div class="lost-time-value" id="totalLostTime">00:00:00</div>
+                <div class="lost-time-current" id="currentSession">Текущая сессия: 00:00</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">📅 Сегодня</div>
+                    <div class="stat-value" id="statToday">0 мин</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">📊 Неделя</div>
+                    <div class="stat-value" id="statWeek">0 мин</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">📈 Всего</div>
+                    <div class="stat-value" id="statTotal">0 мин</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Скопировано в буфер!</div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        // ==================== PWA INSTALL ====================
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').classList.add('show');
+        });
+
+        async function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response: ${outcome}`);
+                deferredPrompt = null;
+                closeInstallBanner();
+            }
+        }
+
+        function closeInstallBanner() {
+            document.getElementById('installBanner').classList.remove('show');
+        }
+
+        // Регистрация Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('SW registered:', reg))
+                    .catch(err => console.log('SW error:', err));
+            });
+        }
+
+        // ==================== ВСЕ ОСТАЛЬНЫЕ ФУНКЦИИ ====================
+        // (Вставьте сюда весь JavaScript из вашего текущего файла)
+        
+        const fallbackQuotes = [
+            { text: "Единственный способ сделать выдающуюся работу — любить то, что ты делаешь.", author: "Стив Джобс", originalLang: 'ru' },
+            { text: "Верь, что ты можешь, и ты уже на полпути.", author: "Теодор Рузвельт", originalLang: 'ru' },
+            { text: "Не жди. Время никогда не будет идеальным.", author: "Наполеон Хилл", originalLang: 'ru' },
+            { text: "Успех — это способность идти от неудачи к неудаче, не теряя энтузиазма.", author: "Уинстон Черчилль", originalLang: 'ru' },
+            { text: "Лучшее время, чтобы посадить дерево, было 20 лет назад. Следующее лучшее время — сегодня.", author: "Китайская пословица", originalLang: 'ru' },
+            { text: "Ваше время ограничено, не тратьте его, живя чужой жизнью.", author: "Стив Джобс", originalLang: 'ru' },
+            { text: "Победа — это ещё не всё, но желание победить — это всё.", author: "Винс Ломбарди", originalLang: 'ru' },
+            { text: "Неудача — это просто возможность начать снова, но уже более мудро.", author: "Генри Форд", originalLang: 'ru' },
+            { text: "Либо вы управляете вашим днём, либо день управляет вами.", author: "Джим Рон", originalLang: 'ru' },
+            { text: "Мечтайте по-крупному и не бойтесь мечтать.", author: "Марк Хансон", originalLang: 'ru' },
+            { text: "Сложнее всего начать действовать, все остальное зависит только от упорства.", author: "Амелия Эрхарт", originalLang: 'ru' },
+            { text: "Жизнь — это 10% того, что с вами происходит, и 90% того, как вы на это реагируете.", author: "Чарльз Свиндолл", originalLang: 'ru' },
+            { text: "Не позволяйте вчерашнему дню занимать слишком много места сегодня.", author: "Уилл Роджерс", originalLang: 'ru' },
+            { text: "Вы никогда не пересечете океан, если не наберетесь смелости потерять берег из виду.", author: "Христофор Колумб", originalLang: 'ru' },
+            { text: "Стремитесь не к успеху, а к ценностям, которые он дает.", author: "Альберт Эйнштейн", originalLang: 'ru' }
+        ];
+
+        const quoteAPIs = [
+            {
+                name: 'ZenQuotes',
+                url: 'https://zenquotes.io/api/random',
+                parse: (data) => ({
+                    text: data[0].q,
+                    author: data[0].a,
+                    originalLang: 'en'
+                })
+            },
+            {
+                name: 'Quotable',
+                url: 'https://api.quotable.io/random',
+                parse: (data) => ({
+                    text: data.content,
+                    author: data.author,
+                    originalLang: 'en'
+                })
+            },
+            {
+                name: 'Stoic Quotes',
+                url: 'https://stoic.tekloon.net/stoic-quote',
+                parse: (data) => ({
+                    text: data.quote,
+                    author: data.author || 'Стоический философ',
+                    originalLang: 'en'
+                })
+            }
+        ];
+
+        let history = JSON.parse(localStorage.getItem('quoteHistory')) || [];
+        let currentQuote = null;
+        let currentBg = '';
+        let isOnline = navigator.onLine;
+        let currentLang = 'ru';
+        let autoTranslate = true;
+        let timerInterval = null;
+        let timerStartTime = null;
+        let isTimerRunning = false;
+        let timeData = JSON.parse(localStorage.getItem('timeTrackerData')) || {
+            totalSeconds: 0,
+            sessions: []
+        };
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        function updateOnlineStatus() {
+            isOnline = navigator.onLine;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateOnlineStatus();
+            renderHistory();
+            loadRandomBackground();
+            updateTimeDisplay();
+            updateStats();
+            
+            const savedTimer = localStorage.getItem('activeTimer');
+            if (savedTimer) {
+                const startTime = parseInt(savedTimer);
+                if (!isNaN(startTime)) {
+                    timerStartTime = startTime;
+                    isTimerRunning = true;
+                    startTimerDisplay();
+                }
+            }
+        });
+
+        function loadRandomBackground() {
+            const picsumUrl = `https://picsum.photos/1920/1080?random=${Date.now()}`;
+            
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    currentBg = picsumUrl;
+                    const quoteCard = document.getElementById('quoteCard');
+                    quoteCard.style.backgroundImage = `url('${picsumUrl}')`;
+                    resolve();
+                };
+                img.onerror = () => {
+                    const quoteCard = document.getElementById('quoteCard');
+                    quoteCard.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    resolve();
+                };
+                img.src = picsumUrl;
+            });
+        }
+
+        async function fetchQuoteFromAPI() {
+            const loadingText = document.getElementById('loadingText');
+            
+            for (const api of quoteAPIs) {
+                try {
+                    loadingText.textContent = `Загружаем из ${api.name}...`;
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    
+                    const response = await fetch(api.url, { 
+                        signal: controller.signal,
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) throw new Error(`${api.name} returned ${response.status}`);
+                    
+                    const data = await response.json();
+                    const quote = api.parse(data);
+                    
+                    console.log(`✅ Цитата загружена из ${api.name}`);
+                    return quote;
+                    
+                } catch (error) {
+                    console.warn(`❌ ${api.name} не сработал:`, error.message);
+                }
+            }
+            
+            console.log('⚠️ Все API не доступны, используем локальные цитаты');
+            return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+        }
+
+        async function translateText(text, from = 'en', to = 'ru') {
+            if (from === to) return text;
+            
+            try {
+                const encodedText = encodeURIComponent(text);
+                const url = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=${from}|${to}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.responseStatus === 200 && data.responseData.translatedText) {
+                    return data.responseData.translatedText;
+                } else {
+                    throw new Error('Translation failed');
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+                return text;
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('btnRu').classList.toggle('active', lang === 'ru');
+            document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+            
+            if (currentQuote) {
+                displayQuote(currentQuote);
+            }
+        }
+
+        function toggleAutoTranslate() {
+            autoTranslate = !autoTranslate;
+            const btn = document.getElementById('btnAuto');
+            btn.textContent = `🔄 Автоперевод: ${autoTranslate ? 'ВКЛ' : 'ВЫКЛ'}`;
+            btn.classList.toggle('active', autoTranslate);
+        }
+
+        async function generateQuote() {
+            const loading = document.getElementById('loading');
+            const loadingText = document.getElementById('loadingText');
+            const generateBtn = document.getElementById('generateBtn');
+            
+            loading.classList.add('active');
+            generateBtn.disabled = true;
+            
+            try {
+                let quoteData = await fetchQuoteFromAPI();
+                
+                loadingText.textContent = 'Загружаем красивый фон...';
+                await loadRandomBackground();
+                
+                if (autoTranslate && quoteData.originalLang === 'en' && currentLang === 'ru' && isOnline) {
+                    loadingText.textContent = 'Переводим на русский...';
+                    try {
+                        const translated = await translateText(quoteData.text, 'en', 'ru');
+                        quoteData.translatedText = translated;
+                    } catch (transError) {
+                        console.warn('Перевод не сработал:', transError);
+                        quoteData.translatedText = null;
+                    }
+                }
+                
+                currentQuote = quoteData;
+                displayQuote(quoteData);
+                addToHistory(quoteData);
+                
+                if (!isOnline) showToast('Работа в офлайн режиме', 'error');
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showToast('Используем резервные цитаты', 'error');
+                
+                const quoteData = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+                currentQuote = quoteData;
+                displayQuote(quoteData);
+                addToHistory(quoteData);
+                
+            } finally {
+                loading.classList.remove('active');
+                generateBtn.disabled = false;
+            }
+        }
+
+        function displayQuote(quote) {
+            const quoteText = document.getElementById('quoteText');
+            const quoteAuthor = document.getElementById('quoteAuthor');
+            const transBadge = document.getElementById('transBadge');
+            const quoteCard = document.getElementById('quoteCard');
+            
+            quoteCard.classList.remove('animate');
+            void quoteCard.offsetWidth;
+            quoteCard.classList.add('animate');
+            
+            let displayText = quote.text;
+            let isTranslated = false;
+            
+            if (quote.originalLang === 'en') {
+                if (currentLang === 'ru' && quote.translatedText) {
+                    displayText = quote.translatedText;
+                    isTranslated = true;
+                } else if (currentLang === 'en') {
+                    displayText = quote.text;
+                    isTranslated = false;
+                }
+            } else {
+                if (currentLang === 'en' && autoTranslate && isOnline) {
+                    translateText(quote.text, 'ru', 'en').then(translated => {
+                        quoteText.textContent = translated;
+                    });
+                    isTranslated = true;
+                } else {
+                    displayText = quote.text;
+                    isTranslated = currentLang === 'en';
+                }
+            }
+            
+            quoteText.textContent = displayText;
+            quoteAuthor.textContent = quote.author;
+            
+            transBadge.classList.toggle('visible', isTranslated && currentLang === 'ru');
+        }
+
+        function copyText() {
+            if (!currentQuote) {
+                showToast("Сначала получите цитату!", 'error');
+                return;
+            }
+            
+            const text = `"${document.getElementById('quoteText').textContent}" — ${currentQuote.author}`;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Скопировано в буфер!");
+            }).catch(() => {
+                showToast("Ошибка копирования!", 'error');
+            });
+        }
+
+        function downloadImage() {
+            if (!currentQuote) {
+                showToast("Сначала получите цитату!", 'error');
+                return;
+            }
+            
+            const quoteCard = document.getElementById('quoteCard');
+            
+            html2canvas(quoteCard, {
+                backgroundColor: null,
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `цитата-${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showToast("Картинка скачана!");
+            }).catch(() => {
+                showToast("Ошибка при скачивании!", 'error');
+            });
+        }
+
+        function addToHistory(quote) {
+            history.unshift(quote);
+            if (history.length > 10) history.pop();
+            localStorage.setItem('quoteHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            if (history.length === 0) {
+                historyList.innerHTML = '<p style="color: rgba(255,255,255,0.8); text-align: center;">История пуста</p>';
+                return;
+            }
+            historyList.innerHTML = history.map((item, index) => `
+                <div class="history-item" onclick="loadFromHistory(${index})">
+                    <div class="history-text">"${item.text.substring(0, 60)}${item.text.length > 60 ? '...' : ''}"</div>
+                    <div class="history-author">${item.author}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadFromHistory(index) {
+            const quote = history[index];
+            currentQuote = quote;
+            displayQuote(quote);
+            showToast("Цитата загружена!");
+            toggleHistory();
+        }
+
+        function toggleHistory() {
+            const panel = document.getElementById('historyPanel');
+            panel.classList.toggle('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show';
+            if (type === 'error') {
+                toast.classList.add('error');
+            }
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.classList.remove('error');
+            }, 3000);
+        }
+
+        function formatTime(seconds) {
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function formatTimeShort(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function updateTimeDisplay() {
+            const totalDisplay = document.getElementById('totalLostTime');
+            totalDisplay.textContent = formatTime(timeData.totalSeconds);
+        }
+
+        function updateStats() {
+            const now = new Date();
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const weekStart = new Date(now.setDate(now.getDate() - now.getDay())).getTime();
+
+            let todaySeconds = 0;
+            let weekSeconds = 0;
+
+            timeData.sessions.forEach(session => {
+                if (session.end) {
+                    if (session.start >= todayStart) {
+                        todaySeconds += session.duration;
+                    }
+                    if (session.start >= weekStart) {
+                        weekSeconds += session.duration;
+                    }
+                }
+            });
+
+            document.getElementById('statToday').textContent = formatTimeShort(todaySeconds);
+            document.getElementById('statWeek').textContent = formatTimeShort(weekSeconds);
+            document.getElementById('statTotal').textContent = formatTimeShort(timeData.totalSeconds);
+        }
+
+        function startTimer() {
+            if (isTimerRunning) return;
+            
+            timerStartTime = Date.now();
+            isTimerRunning = true;
+            
+            localStorage.setItem('activeTimer', timerStartTime.toString());
+            
+            document.getElementById('btnStart').disabled = true;
+            document.getElementById('btnStop').disabled = false;
+            document.getElementById('btnStart').classList.add('active');
+            document.getElementById('currentSession').classList.add('visible');
+            
+            startTimerDisplay();
+            
+            showToast('Таймер запущен! Время пошло...', 'success');
+        }
+
+        function startTimerDisplay() {
+            const currentDisplay = document.getElementById('currentSession');
+            
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - timerStartTime) / 1000);
+                currentDisplay.textContent = `Текущая сессия: ${formatTimeShort(elapsed)}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (!isTimerRunning) return;
+            
+            const endTime = Date.now();
+            const duration = Math.floor((endTime - timerStartTime) / 1000);
+            
+            const session = {
+                start: timerStartTime,
+                end: endTime,
+                duration: duration,
+                date: new Date().toISOString()
+            };
+            
+            timeData.sessions.push(session);
+            timeData.totalSeconds += duration;
+            
+            localStorage.setItem('timeTrackerData', JSON.stringify(timeData));
+            localStorage.removeItem('activeTimer');
+            
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerStartTime = null;
+            
+            document.getElementById('btnStart').disabled = false;
+            document.getElementById('btnStop').disabled = true;
+            document.getElementById('btnStart').classList.remove('active');
+            document.getElementById('currentSession').classList.remove('visible');
+            document.getElementById('currentSession').textContent = 'Текущая сессия: 00:00';
+            
+            updateTimeDisplay();
+            updateStats();
+            
+            showToast(`Записано ${formatTimeShort(duration)} потерянного времени`, 'success');
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (isTimerRunning && timerStartTime) {
+                localStorage.setItem('activeTimer', timerStartTime.toString());
+            }
+        });
+    </script>
+</body>
+</html>

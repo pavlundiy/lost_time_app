@@ -1,0 +1,24 @@
+{
+  "name": "Мотивирующие Цитаты",
+  "short_name": "Цитаты",
+  "description": "Мотивирующие цитаты с трекером времени",
+  "start_url": "./Мотивирующие Цитаты.html",
+  "display": "standalone",
+  "background_color": "#1e3c72",
+  "theme_color": "#1e3c72",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
