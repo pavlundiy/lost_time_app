@@ -2,8 +2,8 @@ const CACHE_NAME = 'quotes-app-v18';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.json',
-  'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@1,500&display=swap',
-  'https://html2canvas.hertzen.com/dist/html2canvas.min.js'
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 // Установка Service Worker
