@@ -29,14 +29,14 @@
 
         html, body {
             height: 100%;
-            min-height: 100dvh; /* Динамическая высота для мобильных */
+            min-height: 100dvh;
             overflow: hidden;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            padding: 12px 12px 16px 12px; /* Увеличенный отступ снизу */
+            padding: 12px 12px 16px 12px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -213,10 +213,9 @@
 
         #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* Кнопка установки PWA - поднята выше */
         #installPwaBtn {
             position: fixed;
-            bottom: 80px; /* Поднята выше статистики */
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: var(--accent-green);
@@ -250,7 +249,6 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
-        /* Адаптация для маленьких экранов */
         @media (max-height: 700px) {
             .quote-text { font-size: 1.3rem; }
             .timer-display { font-size: 2.4rem; }
@@ -390,7 +388,9 @@
             "Выбираем фон...",
             "Настраиваем фокус...",
             "Слушаем пульс...",
-            "Почти готово..."
+            "Почти готово...",
+            "Ещё немного...",
+            "Цитата уже близко..."
         ];
 
         function formatFullTime(seconds) {
@@ -415,6 +415,21 @@
                 el.style.opacity = 0;
                 el.classList.remove('show');
             }, 2000);
+        }
+
+        function updateStats() {
+            const todayStr = new Date().toDateString();
+            const daySec = storage.history.filter(i => i.d === todayStr).reduce((a, b) => a + b.v, 0);
+            document.getElementById('sDay').textContent = formatFullTime(daySec);
+            document.getElementById('pDay').style.width = Math.min(100, (daySec / WORK_DAY_SEC) * 100) + '%';
+            
+            const weekAgo = Date.now() - (7 * 24 * 3600 * 1000);
+            const weekTotal = storage.history.filter(i => (i.ts || 0) > weekAgo).reduce((a, b) => a + b.v, 0);
+            document.getElementById('sWeek').textContent = formatHHMM(weekTotal);
+            document.getElementById('pWeek').style.width = Math.min(100, (weekTotal / (WORK_DAY_SEC * 5)) * 100) + '%';
+            
+            const uniqueDays = new Set(storage.history.map(i => i.d)).size;
+            document.getElementById('sTotal').textContent = uniqueDays + ' дн.';
         }
 
         async function newQuote() {
@@ -468,15 +483,32 @@
 
             try {
                 loaderMsg.textContent = "📝 Ищем цитату...";
-                const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=ru'));
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => {
+                    controller.abort();
+                    console.warn('⏱️ Таймаут 10 сек: цитата не загрузилась');
+                }, 10000); // 🔟 10 СЕКУНД
+                
+                const res = await fetch(
+                    'https://api.allorigins.win/get?url=' + encodeURIComponent('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=ru'),
+                    { signal: controller.signal }
+                );
+                
+                clearTimeout(timeoutId);
                 const d = await res.json();
                 const q = JSON.parse(d.contents);
                 document.getElementById('qText').textContent = q.quoteText;
                 document.getElementById('qAuthor').textContent = "— " + (q.quoteAuthor || "Автор неизвестен");
+                
             } catch(e) {
+                console.warn('Forismatic не загрузился, используем fallback');
                 document.getElementById('qText').textContent = "Ваше время ограничено, не тратьте его, живя чужой жизнью.";
                 document.getElementById('qAuthor').textContent = "— Стив Джобс";
             }
+            
+            overlay.style.opacity = '0';
+            content.classList.add('visible');
         }
 
         function startCounter() {
@@ -511,7 +543,18 @@
             storage.history.push({ d: new Date().toDateString(), v: diff, ts: Date.now() });
             localStorage.setItem('time_data', JSON.stringify(storage));
             localStorage.removeItem('active_start');
-            location.reload();
+            
+            // === ОБНОВЛЯЕМ UI ВРУЧНУЮ (без reload!) ===
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('stopBtn').classList.remove('active-stop');
+            document.getElementById('timer').textContent = '00:00:00';
+            
+            updateStats();
+            
+            startTime = null;
+            
+            msg(`✅ Записано ${formatFullTime(diff)}`);
         }
 
         function saveAsImage() {
@@ -528,19 +571,7 @@
 
         window.onload = () => {
             newQuote();
-            const todayStr = new Date().toDateString();
-            
-            const daySec = storage.history.filter(i => i.d === todayStr).reduce((a, b) => a + b.v, 0);
-            document.getElementById('sDay').textContent = formatFullTime(daySec);
-            document.getElementById('pDay').style.width = Math.min(100, (daySec / WORK_DAY_SEC) * 100) + '%';
-            
-            const weekAgo = Date.now() - (7 * 24 * 3600 * 1000);
-            const weekTotal = storage.history.filter(i => (i.ts || 0) > weekAgo).reduce((a, b) => a + b.v, 0);
-            document.getElementById('sWeek').textContent = formatHHMM(weekTotal);
-            document.getElementById('pWeek').style.width = Math.min(100, (weekTotal / (WORK_DAY_SEC * 5)) * 100) + '%';
-            
-            const uniqueDays = new Set(storage.history.map(i => i.d)).size;
-            document.getElementById('sTotal').textContent = uniqueDays + ' дн.';
+            updateStats();
 
             const active = localStorage.getItem('active_start');
             if(active) {
