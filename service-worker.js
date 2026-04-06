@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quotes-app-v28';
+const CACHE_NAME = 'quotes-app-v29';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
