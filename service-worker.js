@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quotes-app-v4';
+const CACHE_NAME = 'quotes-app-v19';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
