@@ -1,11 +1,11 @@
 {
-  "name": "Мотивирующие Цитаты",
+  "name": "Цитаты и Время",
   "short_name": "Цитаты",
-  "description": "Мотивирующие цитаты с трекером времени",
+  "description": "Мотивирующие цитаты с трекером потерянного времени",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#1e3c72",
-  "theme_color": "#1e3c72",
+  "background_color": "#0f1016",
+  "theme_color": "#0f1016",
   "orientation": "portrait-primary",
   "icons": [
     {
