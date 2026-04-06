@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1e3c72">
+    <meta name="theme-color" content="#0f1016">
     
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -215,9 +215,51 @@
             border-radius: 30px; font-weight: 700; opacity: 0; transition: 0.3s;
             z-index: 1000; pointer-events: none; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
+
+        /* Кнопка установки PWA */
+        #installPwaBtn {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--accent-green);
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 24px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 25px rgba(52, 199, 89, 0.4);
+            z-index: 999;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: slideUp 0.4s ease forwards;
+        }
+
+        #installPwaBtn.show {
+            display: flex;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #installPwaBtn:active {
+            transform: translateX(-50%) scale(0.98);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(100px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
     </style>
 </head>
 <body>
+    <!-- Кнопка установки PWA -->
+    <button id="installPwaBtn" onclick="installPWA()">
+        📲 Установить приложение
+    </button>
+
     <div class="quote-card" id="quoteCard">
         <div id="bgLayer"></div>
         <div id="loaderOverlay">
@@ -263,6 +305,41 @@
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
+        // ==================== PWA INSTALL ====================
+        let deferredPrompt = null;
+        const installBtn = document.getElementById('installPwaBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.classList.add('show');
+            console.log('✅ PWA готово к установке');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installBtn.classList.remove('show');
+            deferredPrompt = null;
+            console.log('✅ Приложение установлено!');
+            msg('Приложение установлено! 🎉');
+        });
+
+        async function installPWA() {
+            if (!deferredPrompt) {
+                msg('Установка недоступна');
+                return;
+            }
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                installBtn.classList.remove('show');
+                msg('Установка запущена!');
+            }
+            deferredPrompt = null;
+        }
+
+        // ==================== ОСНОВНОЙ КОД ====================
         let startTime = null, timerId = null;
         const storage = JSON.parse(localStorage.getItem('time_data')) || { total: 0, history: [] };
         const WORK_DAY_SEC = 9 * 3600;
@@ -401,17 +478,17 @@
                 }, 1000);
             }
 
-            // Фикс ошибки регистрации SW: проверяем протокол
+            // Регистрация Service Worker (только HTTPS или localhost)
             if ('serviceWorker' in navigator) {
                 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
                 const isHttps = window.location.protocol === 'https:';
 
                 if (isHttps || isLocalhost) {
                     navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('SW зарегистрирован:', reg.scope))
-                    .catch(err => console.warn('Ошибка SW (возможно, вы в Preview):', err));
+                        .then(reg => console.log('✅ SW зарегистрирован:', reg.scope))
+                        .catch(err => console.warn('⚠️ Ошибка SW:', err));
                 } else {
-                    console.log('Регистрация SW пропущена: неподходящий протокол (' + window.location.protocol + ')');
+                    console.log('ℹ️ SW не зарегистрирован: нужен HTTPS');
                 }
             }
         };
