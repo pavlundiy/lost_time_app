@@ -488,7 +488,7 @@
                 const timeoutId = setTimeout(() => {
                     controller.abort();
                     console.warn('⏱️ Таймаут 10 сек: цитата не загрузилась');
-                }, 10000); // 🔟 10 СЕКУНД
+                }, 10000);
                 
                 const res = await fetch(
                     'https://api.allorigins.win/get?url=' + encodeURIComponent('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=ru'),
@@ -544,17 +544,18 @@
             localStorage.setItem('time_data', JSON.stringify(storage));
             localStorage.removeItem('active_start');
             
-            // === ОБНОВЛЯЕМ UI ВРУЧНУЮ (без reload!) ===
             document.getElementById('startBtn').disabled = false;
             document.getElementById('stopBtn').disabled = true;
             document.getElementById('stopBtn').classList.remove('active-stop');
             document.getElementById('timer').textContent = '00:00:00';
             
             updateStats();
-            
             startTime = null;
             
             msg(`✅ Записано ${formatFullTime(diff)}`);
+            
+            // === ОБНОВЛЯЕМ ЦИТАТУ ===
+            newQuote();
         }
 
         function saveAsImage() {
