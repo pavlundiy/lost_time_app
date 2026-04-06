@@ -41,6 +41,7 @@
             overflow: hidden;
         }
 
+        /* Карточка с цитатой */
         .quote-card {
             position: relative;
             border-radius: 30px;
@@ -60,9 +61,9 @@
             background-size: cover;
             background-position: center;
             z-index: 0;
-            transition: opacity 1.2s ease-in-out, transform 2s ease-out;
+            transition: opacity 1.2s ease-in-out, transform 2.5s ease-out;
             opacity: 0;
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
 
         #bgLayer.loaded { 
@@ -110,6 +111,7 @@
             letter-spacing: 0.5px;
         }
 
+        /* Загрузчик */
         #loaderOverlay {
             position: absolute;
             inset: 0;
@@ -148,9 +150,9 @@
             cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 8px;
             backdrop-filter: blur(10px);
-            transition: transform 0.2s;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .btn-ui:active { transform: scale(0.95); }
+        .btn-ui:active { transform: scale(0.92); }
 
         .tracker-section {
             background: var(--card-bg);
@@ -167,9 +169,8 @@
             color: white; font-weight: 800; cursor: pointer;
             font-size: 0.9rem;
             box-shadow: 0 4px 0 rgba(0,0,0,0.2);
-            transition: all 0.1s;
             position: relative;
-            overflow: hidden;
+            transition: transform 0.1s;
         }
 
         .btn-start { background: var(--accent-red); }
@@ -219,7 +220,7 @@
     <div class="quote-card" id="quoteCard">
         <div id="bgLayer"></div>
         <div id="loaderOverlay">
-            <div class="loader-msg" id="loaderMsg">Ищем вдохновение...</div>
+            <div class="loader-msg" id="loaderMsg">Настраиваем фокус...</div>
         </div>
         <div class="quote-content" id="qContent">
             <div class="quote-text" id="qText">...</div>
@@ -374,18 +375,15 @@
             newQuote();
             const todayStr = new Date().toDateString();
             
-            // Сегодня ЧЧ:ММ:СС
             const daySec = storage.history.filter(i => i.d === todayStr).reduce((a, b) => a + b.v, 0);
             document.getElementById('sDay').textContent = formatFullTime(daySec);
             document.getElementById('pDay').style.width = Math.min(100, (daySec / WORK_DAY_SEC) * 100) + '%';
             
-            // Неделя ЧЧ:ММ
             const weekAgo = Date.now() - (7 * 24 * 3600 * 1000);
             const weekTotal = storage.history.filter(i => (i.ts || 0) > weekAgo).reduce((a, b) => a + b.v, 0);
             document.getElementById('sWeek').textContent = formatHHMM(weekTotal);
             document.getElementById('pWeek').style.width = Math.min(100, (weekTotal / (WORK_DAY_SEC * 5)) * 100) + '%';
             
-            // Всего Дни
             const uniqueDays = new Set(storage.history.map(i => i.d)).size;
             document.getElementById('sTotal').textContent = uniqueDays + ' дн.';
 
@@ -402,9 +400,18 @@
                 }, 1000);
             }
 
-            // Регистрация Service Worker для PWA
+            // Фикс ошибки регистрации SW: проверяем протокол
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+                const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                const isHttps = window.location.protocol === 'https:';
+
+                if (isHttps || isLocalhost) {
+                    navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('SW зарегистрирован:', reg.scope))
+                    .catch(err => console.warn('Ошибка SW (возможно, вы в Preview):', err));
+                } else {
+                    console.log('Регистрация SW пропущена: неподходящий протокол (' + window.location.protocol + ')');
+                }
             }
         };
     </script>
