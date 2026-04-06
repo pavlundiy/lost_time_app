@@ -1,4 +1,4 @@
-const CACHE_NAME = 'quotes-app-v19';
+const CACHE_NAME = 'quotes-app-v20';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -7,15 +7,11 @@ const ASSETS_TO_CACHE = [
 
 // Установка
 self.addEventListener('install', (event) => {
-    console.log('[SW] Install');
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log('[SW] Caching');
             return cache.addAll(ASSETS_TO_CACHE).catch(err => {
                 console.log('[SW] Cache error:', err);
             });
-        }).catch(err => {
-            console.log('[SW] Install error:', err);
         })
     );
     self.skipWaiting();
@@ -23,13 +19,11 @@ self.addEventListener('install', (event) => {
 
 // Активация
 self.addEventListener('activate', (event) => {
-    console.log('[SW] Activate');
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
                     if (cacheName !== CACHE_NAME) {
-                        console.log('[SW] Delete old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
@@ -39,24 +33,36 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
-// Перехват запросов
+// Перехват запросов — ТОЛЬКО для своих файлов!
 self.addEventListener('fetch', (event) => {
+    const url = new URL(event.request.url);
+    
+    // Пропускаем внешние запросы (API, шрифты, картинки)
+    if (url.origin !== location.origin) {
+        return; // Не перехватываем!
+    }
+    
+    // Перехватываем только свои файлы
     event.respondWith(
         caches.match(event.request).then((response) => {
             if (response) {
                 return response;
             }
+            
             return fetch(event.request).then((response) => {
                 if (!response || response.status !== 200 || response.type !== 'basic') {
                     return response;
                 }
+                
                 const responseToCache = response.clone();
                 caches.open(CACHE_NAME).then((cache) => {
                     cache.put(event.request, responseToCache);
                 });
+                
                 return response;
             }).catch(() => {
-                console.log('[SW] Fetch failed');
+                // Офлайн — возвращаем index.html
+                return caches.match('./index.html');
             });
         })
     );
