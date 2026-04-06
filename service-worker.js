@@ -1,61 +1,63 @@
-const CACHE_NAME = 'quotes-app-v18';
+const CACHE_NAME = 'quotes-app-v4';
 const ASSETS_TO_CACHE = [
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
+    './',
+    './index.html',
+    './manifest.json'
 ];
 
-// Установка Service Worker
+// Установка
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('Кэширование активов');
-      return cache.addAll(ASSETS_TO_CACHE).catch(err => {
-        console.log('Некоторые ресурсы не закэшировались:', err);
-      });
-    })
-  );
-  self.skipWaiting();
+    console.log('[SW] Install');
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            console.log('[SW] Caching');
+            return cache.addAll(ASSETS_TO_CACHE).catch(err => {
+                console.log('[SW] Cache error:', err);
+            });
+        }).catch(err => {
+            console.log('[SW] Install error:', err);
+        })
+    );
+    self.skipWaiting();
 });
 
-// Активация Service Worker
+// Активация
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Удаление старого кэша:', cacheName);
-            return caches.delete(cacheName);
-          }
+    console.log('[SW] Activate');
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('[SW] Delete old cache:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
         })
-      );
-    })
-  );
-  self.clients.claim();
+    );
+    self.clients.claim();
 });
 
 // Перехват запросов
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
-        }
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        return response;
-      });
-    }).catch(() => {
-      // Офлайн - возвращаем главную страницу
-      return caches.match('./index.html');
-    })
-  );
+    event.respondWith(
+        caches.match(event.request).then((response) => {
+            if (response) {
+                return response;
+            }
+            return fetch(event.request).then((response) => {
+                if (!response || response.status !== 200 || response.type !== 'basic') {
+                    return response;
+                }
+                const responseToCache = response.clone();
+                caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(event.request, responseToCache);
+                });
+                return response;
+            }).catch(() => {
+                console.log('[SW] Fetch failed');
+            });
+        })
+    );
 });
