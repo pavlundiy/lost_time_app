@@ -609,6 +609,7 @@
 
         // ==================== ОСНОВНОЙ КОД ====================
         let startTime = null, timerId = null;
+        let currentBgUrl = ''; // Храним URL текущего фона
         const storage = JSON.parse(localStorage.getItem('time_data')) || { total: 0, history: [] };
         const WORK_DAY_SEC = 9 * 3600;
 
@@ -623,12 +624,11 @@
             "Цитата уже близко..."
         ];
 
-        // === ПОДДЕРЖИВАЮЩИЕ СООБЩЕНИЯ ===
         const supportMessages = [
             "Ты вернулся! 💪 Сделай глубокий вдох.",
             "Молодец! 🎯 Время сфокусироваться.",
             "Ты справился! 🌟 Продолжай в том же духе.",
-            "Отличная работа! 🔥 Ты контролирую ситуацию.",
+            "Отличная работа! 🔥 Ты контролируешь ситуацию.",
             "Горжусь тобой! 💚 Всё под контролем."
         ];
 
@@ -696,7 +696,6 @@
             document.getElementById('sTotal').textContent = uniqueDays + ' дн.';
             document.getElementById('cTotal').textContent = totalCount + ' раз';
 
-            // === ПРОВЕРКА НА ВЫГОРАНИЕ ===
             if (dayCount >= 8) {
                 const randomMsg = burnoutMessages[Math.floor(Math.random() * burnoutMessages.length)];
                 setTimeout(() => msg(randomMsg), 3000);
@@ -719,14 +718,14 @@
                 const bingData = await bingRes.json();
                 const bingImage = bingData.images[0];
                 
-                const imgUrl = 'https://www.bing.com' + bingImage.urlbase + '&pid=hp&w=1080&h=1920&rs=1&c=4';
+                currentBgUrl = 'https://www.bing.com' + bingImage.urlbase + '&pid=hp&w=1080&h=1920&rs=1&c=4';
                 
                 const img = new Image();
                 img.crossOrigin = "anonymous";
-                img.src = imgUrl;
+                img.src = currentBgUrl;
                 
                 img.onload = () => {
-                    bg.style.backgroundImage = `url('${imgUrl}')`;
+                    bg.style.backgroundImage = `url('${currentBgUrl}')`;
                     bg.classList.add('loaded');
                     loaderMsg.textContent = "✨ Готово!";
                     setTimeout(() => {
@@ -736,8 +735,8 @@
                 };
                 
                 img.onerror = () => {
-                    const fallbackUrl = `https://picsum.photos/1080/1920?random=${Math.random()}`;
-                    bg.style.backgroundImage = `url('${fallbackUrl}')`;
+                    currentBgUrl = `https://picsum.photos/1080/1920?random=${Math.random()}`;
+                    bg.style.backgroundImage = `url('${currentBgUrl}')`;
                     bg.classList.add('loaded');
                     setTimeout(() => {
                         overlay.style.opacity = '0';
@@ -745,8 +744,8 @@
                     }, 400);
                 };
             } catch(e) {
-                const fallbackUrl = `https://picsum.photos/1080/1920?random=${Math.random()}`;
-                bg.style.backgroundImage = `url('${fallbackUrl}')`;
+                currentBgUrl = `https://picsum.photos/1080/1920?random=${Math.random()}`;
+                bg.style.backgroundImage = `url('${currentBgUrl}')`;
                 bg.classList.add('loaded');
                 overlay.style.opacity = '0';
                 content.classList.add('visible');
@@ -823,23 +822,102 @@
             updateStats();
             startTime = null;
             
-            // === ПОДДЕРЖИВАЮЩЕЕ СООБЩЕНИЕ ===
             const supportMsg = supportMessages[Math.floor(Math.random() * supportMessages.length)];
             msg(supportMsg);
             
             newQuote();
         }
 
+        // ==================== СКРИНШОТ С ЗАХВАТОМ BING ФОНА ====================
         function saveAsImage() {
             msg("📸 Создаем фото...");
-            const card = document.getElementById('quoteCard');
-            html2canvas(card, { useCORS: true, scale: 2 }).then(canvas => {
+            
+            const quoteText = document.getElementById('qText').textContent;
+            const quoteAuthor = document.getElementById('qAuthor').textContent;
+            
+            // Загружаем изображение отдельно
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = currentBgUrl;
+            
+            img.onload = () => {
+                // Создаём canvas 1080x1920
+                const canvas = document.createElement('canvas');
+                canvas.width = 1080;
+                canvas.height = 1920;
+                const ctx = canvas.getContext('2d');
+                
+                // Рисуем фон
+                ctx.drawImage(img, 0, 0, 1080, 1920);
+                
+                // Градиент затемнения (как в приложении)
+                const gradient = ctx.createLinearGradient(0, 1920, 0, 960);
+                gradient.addColorStop(0, 'rgba(0,0,0,0.95)');
+                gradient.addColorStop(0.5, 'rgba(0,0,0,0.6)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.2)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 1080, 1920);
+                
+                // Кавычка
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.font = 'bold 200px "Playfair Display"';
+                ctx.fillText('"', 40, 180);
+                
+                // Текст цитаты
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'italic 52px "Playfair Display"';
+                ctx.textAlign = 'left';
+                ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                ctx.shadowBlur = 10;
+                
+                // Перенос строк для цитаты
+                const words = quoteText.split(' ');
+                let line = '';
+                let y = 1300;
+                const maxWidth = 960;
+                const lineHeight = 70;
+                
+                for (let n = 0; n < words.length; n++) {
+                    const testLine = line + words[n] + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth && n > 0) {
+                        ctx.fillText(line, 60, y);
+                        line = words[n] + ' ';
+                        y += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line, 60, y);
+                
+                // Автор
+                ctx.font = '600 36px "Inter"';
+                ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                ctx.textAlign = 'right';
+                ctx.shadowBlur = 8;
+                ctx.fillText(quoteAuthor, 1020, 1550);
+                
+                // Скачиваем
                 const link = document.createElement('a');
                 link.download = `focus_${Date.now()}.png`;
-                link.href = canvas.toDataURL();
+                link.href = canvas.toDataURL('image/png');
                 link.click();
                 msg("✅ Готово!");
-            }).catch(err => msg("❌ Ошибка сохранения"));
+            };
+            
+            img.onerror = () => {
+                // Fallback на html2canvas если фон не загрузился
+                const card = document.getElementById('quoteCard');
+                html2canvas(card, { useCORS: true, allowTaint: true, scale: 2 })
+                    .then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = `focus_${Date.now()}.png`;
+                        link.href = canvas.toDataURL();
+                        link.click();
+                        msg("✅ Готово!");
+                    })
+                    .catch(() => msg("❌ Ошибка сохранения"));
+            };
         }
 
         // ==================== АНАЛИТИКА ====================
@@ -847,25 +925,21 @@
             const modal = document.getElementById('analyticsModal');
             modal.classList.add('show');
             
-            // Расчёт индекса спокойствия (1-10)
             const todayStr = new Date().toDateString();
             const todaySessions = storage.history.filter(i => i.d === todayStr);
             const todayCount = todaySessions.length;
             const todaySec = todaySessions.reduce((a, b) => a + b.v, 0);
             const avgSec = todayCount > 0 ? Math.floor(todaySec / todayCount) : 0;
             
-            // Индекс: 10 - мало сессий, 1 - много
             let calmIndex = Math.max(1, Math.min(10, 10 - Math.floor(todayCount / 2)));
-            if (todaySec > 4 * 3600) calmIndex = Math.min(calmIndex, 4); // Если >4 часов
+            if (todaySec > 4 * 3600) calmIndex = Math.min(calmIndex, 4);
             
-            const emojis = ['😰', '😟', '😐', '🙂', '😊', '😌', '🧘', '😌', '😊', '‍♂️'];
+            const emojis = ['😰', '😟', '😐', '🙂', '😊', '😌', '🧘', '😌', '😊', '🧘‍♂️'];
             document.getElementById('calmValue').textContent = calmIndex + '/10';
             document.getElementById('calmEmoji').textContent = emojis[calmIndex - 1];
             
-            // Среднее время сессии
             document.getElementById('avgSession').textContent = avgSec > 0 ? formatFullTime(avgSec) : '--:--';
             
-            // Самое беспокойное время
             const hourCounts = {};
             storage.history.forEach(s => {
                 const hour = new Date(s.ts).getHours();
@@ -874,7 +948,6 @@
             const busyHour = Object.entries(hourCounts).sort((a, b) => b[1] - a[1])[0];
             document.getElementById('busyTime').textContent = busyHour ? `${busyHour[0]}:00` : '--:--';
             
-            // Инсайт
             const insight = insights[Math.floor(Math.random() * insights.length)];
             document.getElementById('insightText').textContent = insight;
         }
@@ -898,7 +971,7 @@
             instruction.textContent = 'Вдыхайте через нос...';
             
             breathInterval = setInterval(() => {
-                isInhale = !inhale;
+                isInhale = !isInhale;
                 if (isInhale) {
                     circle.textContent = 'Вдох';
                     instruction.textContent = 'Вдыхайте через нос...';
@@ -912,7 +985,7 @@
         function closeBreathing() {
             clearInterval(breathInterval);
             document.getElementById('breathingModal').classList.remove('show');
-            msg(' Отличная работа!');
+            msg('🧘 Отличная работа!');
         }
 
         // ==================== ВЫГРУЗКА ЛОГА ====================
