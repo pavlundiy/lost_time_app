@@ -408,26 +408,6 @@
             border: 1px solid var(--card-border);
         }
 
-        /* === КНОПКА АНАЛИТИКИ === */
-        .btn-analytics {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-            font-size: 1.3rem;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(191, 90, 242, 0.4);
-            z-index: 998;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         @media (max-height: 700px) {
             .quote-text { font-size: 1.3rem; }
             .timer-display { font-size: 2.4rem; }
@@ -438,7 +418,6 @@
 </head>
 <body>
     <button id="installPwaBtn" onclick="installPWA()">📲 Установить приложение</button>
-    <button class="btn-analytics" onclick="openAnalytics()">📊</button>
 
     <div class="quote-card" id="quoteCard">
         <div id="bgLayer"></div>
@@ -451,9 +430,11 @@
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <!-- КНОПКИ В ОДИН РЯД -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
         <button class="btn-ui" onclick="newQuote()">🎲 Цитата</button>
         <button class="btn-ui" onclick="saveAsImage()">💾 Скрин</button>
+        <button class="btn-ui" onclick="openAnalytics()">📊 Анализ</button>
     </div>
 
     <div class="tracker-section">
@@ -609,7 +590,8 @@
 
         // ==================== ОСНОВНОЙ КОД ====================
         let startTime = null, timerId = null;
-        let currentBgUrl = ''; // Храним URL текущего фона
+        let currentBgUrl = '';
+        let loadedBgUrl = ''; // <-- ФИНАЛЬНЫЙ URL ПОСЛЕ ЗАГРУЗКИ
         const storage = JSON.parse(localStorage.getItem('time_data')) || { total: 0, history: [] };
         const WORK_DAY_SEC = 9 * 3600;
 
@@ -725,6 +707,7 @@
                 img.src = currentBgUrl;
                 
                 img.onload = () => {
+                    loadedBgUrl = img.src; // <-- СОХРАНЯЕМ РЕАЛЬНЫЙ URL
                     bg.style.backgroundImage = `url('${currentBgUrl}')`;
                     bg.classList.add('loaded');
                     loaderMsg.textContent = "✨ Готово!";
@@ -736,6 +719,7 @@
                 
                 img.onerror = () => {
                     currentBgUrl = `https://picsum.photos/1080/1920?random=${Math.random()}`;
+                    loadedBgUrl = currentBgUrl;
                     bg.style.backgroundImage = `url('${currentBgUrl}')`;
                     bg.classList.add('loaded');
                     setTimeout(() => {
@@ -745,6 +729,7 @@
                 };
             } catch(e) {
                 currentBgUrl = `https://picsum.photos/1080/1920?random=${Math.random()}`;
+                loadedBgUrl = currentBgUrl;
                 bg.style.backgroundImage = `url('${currentBgUrl}')`;
                 bg.classList.add('loaded');
                 overlay.style.opacity = '0';
@@ -828,20 +813,21 @@
             newQuote();
         }
 
-        // ==================== СКРИНШОТ С ЗАХВАТОМ BING ФОНА ====================
+        // ==================== СКРИНШОТ С ПРАВИЛЬНЫМ ФОНОМ ====================
         function saveAsImage() {
             msg("📸 Создаем фото...");
             
             const quoteText = document.getElementById('qText').textContent;
             const quoteAuthor = document.getElementById('qAuthor').textContent;
             
-            // Загружаем изображение отдельно
+            // Используем РЕАЛЬНЫЙ загруженный URL
+            const imgUrl = loadedBgUrl || currentBgUrl;
+            
             const img = new Image();
             img.crossOrigin = "anonymous";
-            img.src = currentBgUrl;
+            img.src = imgUrl;
             
             img.onload = () => {
-                // Создаём canvas 1080x1920
                 const canvas = document.createElement('canvas');
                 canvas.width = 1080;
                 canvas.height = 1920;
@@ -850,7 +836,7 @@
                 // Рисуем фон
                 ctx.drawImage(img, 0, 0, 1080, 1920);
                 
-                // Градиент затемнения (как в приложении)
+                // Градиент затемнения
                 const gradient = ctx.createLinearGradient(0, 1920, 0, 960);
                 gradient.addColorStop(0, 'rgba(0,0,0,0.95)');
                 gradient.addColorStop(0.5, 'rgba(0,0,0,0.6)');
@@ -870,7 +856,7 @@
                 ctx.shadowColor = 'rgba(0,0,0,0.8)';
                 ctx.shadowBlur = 10;
                 
-                // Перенос строк для цитаты
+                // Перенос строк
                 const words = quoteText.split(' ');
                 let line = '';
                 let y = 1300;
@@ -906,17 +892,7 @@
             };
             
             img.onerror = () => {
-                // Fallback на html2canvas если фон не загрузился
-                const card = document.getElementById('quoteCard');
-                html2canvas(card, { useCORS: true, allowTaint: true, scale: 2 })
-                    .then(canvas => {
-                        const link = document.createElement('a');
-                        link.download = `focus_${Date.now()}.png`;
-                        link.href = canvas.toDataURL();
-                        link.click();
-                        msg("✅ Готово!");
-                    })
-                    .catch(() => msg("❌ Ошибка сохранения"));
+                msg("❌ Не удалось загрузить фон");
             };
         }
 
