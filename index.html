@@ -25,6 +25,7 @@
             --accent-green: #34c759;
             --accent-gold: #ffd60a;
             --accent-blue: #007aff;
+            --accent-purple: #bf5af2;
         }
 
         html, body {
@@ -197,6 +198,7 @@
         }
         .stat-label { font-size: 0.5rem; opacity: 0.5; margin-bottom: 4px; font-weight: 800; text-transform: uppercase; }
         .stat-val { font-weight: 800; font-size: 0.85rem; color: #fff; }
+        .stat-count { font-size: 0.65rem; color: var(--accent-purple); margin-top: 2px; font-weight: 700; }
         
         .stat-progress-wrap {
             width: 80%; height: 3px; background: rgba(255,255,255,0.1);
@@ -249,6 +251,183 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
+        /* === МОДАЛЬНЫЕ ОКНА === */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal-content {
+            background: var(--bg-color);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: var(--card-bg);
+            border: none;
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* === АНАЛИТИКА === */
+        .analytics-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--card-border);
+        }
+
+        .analytics-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .analytics-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .calm-index {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .calm-index-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .calm-index-emoji {
+            font-size: 2rem;
+        }
+
+        .insight-box {
+            background: rgba(191, 90, 242, 0.15);
+            border: 1px solid rgba(191, 90, 242, 0.3);
+            border-radius: 12px;
+            padding: 14px;
+            margin-top: 16px;
+        }
+
+        .insight-text {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        /* === ДЫХАНИЕ === */
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            animation: breathe 8s infinite ease-in-out;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+        }
+
+        .breathing-instruction {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: 16px;
+        }
+
+        /* === КНОПКИ В МОДАЛКАХ === */
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: transform 0.2s;
+        }
+
+        .modal-btn:active { transform: scale(0.98); }
+
+        .btn-breath {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+        }
+
+        .btn-download {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--card-border);
+        }
+
+        /* === КНОПКА АНАЛИТИКИ === */
+        .btn-analytics {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(191, 90, 242, 0.4);
+            z-index: 998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         @media (max-height: 700px) {
             .quote-text { font-size: 1.3rem; }
             .timer-display { font-size: 2.4rem; }
@@ -259,6 +438,7 @@
 </head>
 <body>
     <button id="installPwaBtn" onclick="installPWA()">📲 Установить приложение</button>
+    <button class="btn-analytics" onclick="openAnalytics()">📊</button>
 
     <div class="quote-card" id="quoteCard">
         <div id="bgLayer"></div>
@@ -286,22 +466,72 @@
             <div class="stat-box">
                 <div class="stat-label">Сегодня</div>
                 <div class="stat-val" id="sDay">00:00:00</div>
+                <div class="stat-count" id="cDay">0 раз</div>
                 <div class="stat-progress-wrap"><div class="stat-progress-bar" id="pDay" style="background:var(--accent-gold)"></div></div>
             </div>
             <div class="stat-box">
                 <div class="stat-label">Неделя</div>
                 <div class="stat-val" id="sWeek">00:00</div>
+                <div class="stat-count" id="cWeek">0 раз</div>
                 <div class="stat-progress-wrap"><div class="stat-progress-bar" id="pWeek" style="background:var(--accent-green)"></div></div>
             </div>
             <div class="stat-box">
                 <div class="stat-label">Всего</div>
                 <div class="stat-val" id="sTotal">0 дн.</div>
+                <div class="stat-count" id="cTotal">0 раз</div>
                 <div class="stat-progress-wrap"><div class="stat-progress-bar" id="pTotal" style="background:var(--accent-blue); width:100%"></div></div>
             </div>
         </div>
     </div>
 
     <div id="toast"></div>
+
+    <!-- === МОДАЛКА АНАЛИТИКИ === -->
+    <div class="modal-overlay" id="analyticsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">📊 Моё состояние</div>
+                <button class="modal-close" onclick="closeAnalytics()">✕</button>
+            </div>
+            
+            <div class="calm-index">
+                <div class="calm-index-value" id="calmValue">--</div>
+                <div class="calm-index-emoji" id="calmEmoji">--</div>
+                <div style="margin-left: 10px; font-size: 0.9rem; color: var(--text-secondary);">Индекс спокойствия</div>
+            </div>
+
+            <div class="analytics-card">
+                <div class="analytics-label">Среднее время сессии</div>
+                <div class="analytics-value" id="avgSession">--:--</div>
+            </div>
+
+            <div class="analytics-card">
+                <div class="analytics-label">Самое беспокойное время</div>
+                <div class="analytics-value" id="busyTime">--:--</div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-text" id="insightText">Загрузите данные...</div>
+            </div>
+
+            <button class="modal-btn btn-download" onclick="downloadLog()">📥 Скачать лог (CSV)</button>
+        </div>
+    </div>
+
+    <!-- === МОДАЛКА ДЫХАНИЯ === -->
+    <div class="modal-overlay" id="breathingModal">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-header">
+                <div class="modal-title">🌬️ Дыхание</div>
+                <button class="modal-close" onclick="closeBreathing()">✕</button>
+            </div>
+            
+            <div class="breathing-circle" id="breathCircle">Вдох</div>
+            <div class="breathing-instruction" id="breathInstruction">Следите за кругом</div>
+            
+            <button class="modal-btn btn-breath" onclick="closeBreathing()">Завершить</button>
+        </div>
+    </div>
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
@@ -393,6 +623,30 @@
             "Цитата уже близко..."
         ];
 
+        // === ПОДДЕРЖИВАЮЩИЕ СООБЩЕНИЯ ===
+        const supportMessages = [
+            "Ты вернулся! 💪 Сделай глубокий вдох.",
+            "Молодец! 🎯 Время сфокусироваться.",
+            "Ты справился! 🌟 Продолжай в том же духе.",
+            "Отличная работа! 🔥 Ты контролирую ситуацию.",
+            "Горжусь тобой! 💚 Всё под контролем."
+        ];
+
+        const burnoutMessages = [
+            "Ты сегодня много общался. Не забудь сделать паузу! 🌿",
+            "Важно помнить: твои границы — это нормально. 🛡️",
+            "Сделай 5 глубоких вдохов. Ты молодец! 🌬️",
+            "Помни: ты не обязан быть доступным 24/7. 💙"
+        ];
+
+        const insights = [
+            "Обычно утром меньше прерываний — планируй сложные задачи на это время.",
+            "Пятница после 16:00 — твоё спокойное время для отчётов.",
+            "Среда — самый активный день. Держись! 💪",
+            "Твой индекс спокойствия растёт! Продолжай в том же духе.",
+            "Замечаешь паттерн? Понедельник утром — время встреч."
+        ];
+
         function formatFullTime(seconds) {
             const h = Math.floor(seconds / 3600);
             const m = Math.floor((seconds % 3600) / 60);
@@ -419,17 +673,34 @@
 
         function updateStats() {
             const todayStr = new Date().toDateString();
-            const daySec = storage.history.filter(i => i.d === todayStr).reduce((a, b) => a + b.v, 0);
+            const todaySessions = storage.history.filter(i => i.d === todayStr);
+            const daySec = todaySessions.reduce((a, b) => a + b.v, 0);
+            const dayCount = todaySessions.length;
+            
             document.getElementById('sDay').textContent = formatFullTime(daySec);
+            document.getElementById('cDay').textContent = dayCount + ' раз';
             document.getElementById('pDay').style.width = Math.min(100, (daySec / WORK_DAY_SEC) * 100) + '%';
             
             const weekAgo = Date.now() - (7 * 24 * 3600 * 1000);
-            const weekTotal = storage.history.filter(i => (i.ts || 0) > weekAgo).reduce((a, b) => a + b.v, 0);
+            const weekSessions = storage.history.filter(i => (i.ts || 0) > weekAgo);
+            const weekTotal = weekSessions.reduce((a, b) => a + b.v, 0);
+            const weekCount = weekSessions.length;
+            
             document.getElementById('sWeek').textContent = formatHHMM(weekTotal);
+            document.getElementById('cWeek').textContent = weekCount + ' раз';
             document.getElementById('pWeek').style.width = Math.min(100, (weekTotal / (WORK_DAY_SEC * 5)) * 100) + '%';
             
             const uniqueDays = new Set(storage.history.map(i => i.d)).size;
+            const totalCount = storage.history.length;
+            
             document.getElementById('sTotal').textContent = uniqueDays + ' дн.';
+            document.getElementById('cTotal').textContent = totalCount + ' раз';
+
+            // === ПРОВЕРКА НА ВЫГОРАНИЕ ===
+            if (dayCount >= 8) {
+                const randomMsg = burnoutMessages[Math.floor(Math.random() * burnoutMessages.length)];
+                setTimeout(() => msg(randomMsg), 3000);
+            }
         }
 
         async function newQuote() {
@@ -552,9 +823,10 @@
             updateStats();
             startTime = null;
             
-            msg(`✅ Записано ${formatFullTime(diff)}`);
+            // === ПОДДЕРЖИВАЮЩЕЕ СООБЩЕНИЕ ===
+            const supportMsg = supportMessages[Math.floor(Math.random() * supportMessages.length)];
+            msg(supportMsg);
             
-            // === ОБНОВЛЯЕМ ЦИТАТУ ===
             newQuote();
         }
 
@@ -570,6 +842,104 @@
             }).catch(err => msg("❌ Ошибка сохранения"));
         }
 
+        // ==================== АНАЛИТИКА ====================
+        function openAnalytics() {
+            const modal = document.getElementById('analyticsModal');
+            modal.classList.add('show');
+            
+            // Расчёт индекса спокойствия (1-10)
+            const todayStr = new Date().toDateString();
+            const todaySessions = storage.history.filter(i => i.d === todayStr);
+            const todayCount = todaySessions.length;
+            const todaySec = todaySessions.reduce((a, b) => a + b.v, 0);
+            const avgSec = todayCount > 0 ? Math.floor(todaySec / todayCount) : 0;
+            
+            // Индекс: 10 - мало сессий, 1 - много
+            let calmIndex = Math.max(1, Math.min(10, 10 - Math.floor(todayCount / 2)));
+            if (todaySec > 4 * 3600) calmIndex = Math.min(calmIndex, 4); // Если >4 часов
+            
+            const emojis = ['😰', '😟', '😐', '🙂', '😊', '😌', '🧘', '😌', '😊', '‍♂️'];
+            document.getElementById('calmValue').textContent = calmIndex + '/10';
+            document.getElementById('calmEmoji').textContent = emojis[calmIndex - 1];
+            
+            // Среднее время сессии
+            document.getElementById('avgSession').textContent = avgSec > 0 ? formatFullTime(avgSec) : '--:--';
+            
+            // Самое беспокойное время
+            const hourCounts = {};
+            storage.history.forEach(s => {
+                const hour = new Date(s.ts).getHours();
+                hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+            });
+            const busyHour = Object.entries(hourCounts).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('busyTime').textContent = busyHour ? `${busyHour[0]}:00` : '--:--';
+            
+            // Инсайт
+            const insight = insights[Math.floor(Math.random() * insights.length)];
+            document.getElementById('insightText').textContent = insight;
+        }
+
+        function closeAnalytics() {
+            document.getElementById('analyticsModal').classList.remove('show');
+        }
+
+        // ==================== ДЫХАНИЕ ====================
+        let breathInterval = null;
+        
+        function openBreathing() {
+            const modal = document.getElementById('breathingModal');
+            modal.classList.add('show');
+            
+            const circle = document.getElementById('breathCircle');
+            const instruction = document.getElementById('breathInstruction');
+            
+            let isInhale = true;
+            circle.textContent = 'Вдох';
+            instruction.textContent = 'Вдыхайте через нос...';
+            
+            breathInterval = setInterval(() => {
+                isInhale = !inhale;
+                if (isInhale) {
+                    circle.textContent = 'Вдох';
+                    instruction.textContent = 'Вдыхайте через нос...';
+                } else {
+                    circle.textContent = 'Выдох';
+                    instruction.textContent = 'Выдыхайте через рот...';
+                }
+            }, 4000);
+        }
+
+        function closeBreathing() {
+            clearInterval(breathInterval);
+            document.getElementById('breathingModal').classList.remove('show');
+            msg(' Отличная работа!');
+        }
+
+        // ==================== ВЫГРУЗКА ЛОГА ====================
+        function downloadLog() {
+            if (storage.history.length === 0) {
+                msg('❌ Нет данных для выгрузки');
+                return;
+            }
+            
+            let csv = 'Дата,Время начала,Длительность (сек),Длительность\n';
+            storage.history.forEach(s => {
+                const date = new Date(s.ts);
+                const timeStr = date.toLocaleTimeString('ru-RU');
+                csv += `${s.d},${timeStr},${s.v},${formatFullTime(s.v)}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `time_log_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            msg('✅ Лог скачан!');
+            closeAnalytics();
+        }
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         window.onload = () => {
             newQuote();
             updateStats();
