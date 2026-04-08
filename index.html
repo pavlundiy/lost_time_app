@@ -784,33 +784,34 @@
             }, 1000);
         }
 
-        function stopCounter() {
-            if (!startTime) return;
-            
-            playFreeSound();
-            
-            const diff = Math.floor((Date.now() - startTime) / 1000);
-            clearInterval(timerId);
-            timerId = null;
-            
-            storage.total += diff;
-            storage.history.push({ d: new Date().toDateString(), v: diff, ts: Date.now() });
-            localStorage.setItem('time_data', JSON.stringify(storage));
-            localStorage.removeItem('active_start');
-            
-            document.getElementById('startBtn').disabled = false;
-            document.getElementById('stopBtn').disabled = true;
-            document.getElementById('stopBtn').classList.remove('active-stop');
-            document.getElementById('timer').textContent = '00:00:00';
-            
-            updateStats();
-            startTime = null;
-            
-            const supportMsg = supportMessages[Math.floor(Math.random() * supportMessages.length)];
-            msg(supportMsg);
-            
-            newQuote();
-        }
+function stopCounter() {
+    if (!startTime) return;
+    
+    playFreeSound();
+    
+    const diff = Math.floor((Date.now() - startTime) / 1000);
+    clearInterval(timerId);
+    timerId = null;
+    
+    storage.total += diff;
+    storage.history.push({ d: new Date().toDateString(), v: diff, ts: Date.now() });
+    localStorage.setItem('time_data', JSON.stringify(storage));
+    localStorage.removeItem('active_start');
+    
+    document.getElementById('startBtn').disabled = false;
+    document.getElementById('stopBtn').disabled = true;
+    document.getElementById('stopBtn').classList.remove('active-stop');
+    document.getElementById('timer').textContent = '00:00:00';
+    
+    updateStats();
+    startTime = null;
+    
+    const supportMsg = supportMessages[Math.floor(Math.random() * supportMessages.length)];
+    msg(supportMsg);
+    
+    // === УБРАЛ newQuote() ===
+    // newQuote(); // <-- УДАЛИТЬ ЭТУ СТРОКУ!
+}
 
         // ==================== СКРИНШОТ С ПРАВИЛЬНЫМ ФОНОМ ====================
         function saveAsImage() {
