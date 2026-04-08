@@ -251,7 +251,6 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
-        /* === МОДАЛЬНЫЕ ОКНА === */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -302,7 +301,6 @@
             cursor: pointer;
         }
 
-        /* === АНАЛИТИКА === */
         .analytics-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -354,7 +352,6 @@
             line-height: 1.4;
         }
 
-        /* === ДЫХАНИЕ === */
         .breathing-circle {
             width: 200px;
             height: 200px;
@@ -382,7 +379,6 @@
             margin-top: 16px;
         }
 
-        /* === КНОПКИ В МОДАЛКАХ === */
         .modal-btn {
             width: 100%;
             padding: 14px;
@@ -430,7 +426,6 @@
         </div>
     </div>
 
-    <!-- КНОПКИ В ОДИН РЯД -->
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
         <button class="btn-ui" onclick="newQuote()">🎲 Цитата</button>
         <button class="btn-ui" onclick="saveAsImage()">💾 Скрин</button>
@@ -467,7 +462,6 @@
 
     <div id="toast"></div>
 
-    <!-- === МОДАЛКА АНАЛИТИКИ === -->
     <div class="modal-overlay" id="analyticsModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -499,7 +493,6 @@
         </div>
     </div>
 
-    <!-- === МОДАЛКА ДЫХАНИЯ === -->
     <div class="modal-overlay" id="breathingModal">
         <div class="modal-content" style="text-align: center;">
             <div class="modal-header">
@@ -516,7 +509,6 @@
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        // ==================== PWA INSTALL ====================
         let deferredPrompt = null;
         const installBtn = document.getElementById('installPwaBtn');
 
@@ -543,7 +535,6 @@
             deferredPrompt = null;
         }
 
-        // ==================== ЗВУКОВЫЕ ЭФФЕКТЫ ====================
         let audioContext = null;
 
         function initAudio() {
@@ -588,9 +579,8 @@
             });
         }
 
-        // ==================== ОСНОВНОЙ КОД ====================
         let startTime = null, timerId = null;
-        let bgImageUrl = ''; // <-- ОДИН URL ДЛЯ ЭКРАНА И СКРИНШОТА
+        let bgImageObject = null;
         const storage = JSON.parse(localStorage.getItem('time_data')) || { total: 0, history: [] };
         const WORK_DAY_SEC = 9 * 3600;
 
@@ -622,7 +612,7 @@
 
         const insights = [
             "Обычно утром меньше прерываний — планируй сложные задачи на это время.",
-            "Пятница после 16:00 — твоё спокойное время для отчётов.",
+            "Пятница после 15:45 — расслабься и иди бухать.",
             "Среда — самый активный день. Держись! 💪",
             "Твой индекс спокойствия растёт! Продолжай в том же духе.",
             "Замечаешь паттерн? Понедельник утром — время встреч."
@@ -683,6 +673,7 @@
             }
         }
 
+        // ==================== ИСПРАВЛЕННАЯ ФУНКЦИЯ newQuote() ====================
         async function newQuote() {
             const overlay = document.getElementById('loaderOverlay');
             const bg = document.getElementById('bgLayer');
@@ -706,9 +697,8 @@
                 img.src = requestUrl;
                 
                 img.onload = () => {
-                    // === ИСПОЛЬЗУЕМ img.src (РЕАЛЬНЫЙ URL ПОСЛЕ РЕДИРЕКТА) ===
-                    bgImageUrl = img.src;
-                    
+                    bgImageObject = img;
+                    const bgImageUrl = img.src;
                     bg.style.backgroundImage = `url('${bgImageUrl}')`;
                     bg.classList.add('loaded');
                     loaderMsg.textContent = "✨ Готово!";
@@ -718,9 +708,19 @@
                     }, 400);
                 };
                 
+                // === ИСПРАВЛЕНО: сохраняем fallback вместо null ===
                 img.onerror = () => {
-                    bgImageUrl = `https://picsum.photos/1080/1920?random=${Math.random()}`;
-                    bg.style.backgroundImage = `url('${bgImageUrl}')`;
+                    const fallbackUrl = `https://picsum.photos/1080/1920?random=${Math.random()}`;
+                    
+                    const fallbackImg = new Image();
+                    fallbackImg.crossOrigin = "anonymous";
+                    fallbackImg.src = fallbackUrl;
+                    
+                    fallbackImg.onload = () => {
+                        bgImageObject = fallbackImg;
+                    };
+                    
+                    bg.style.backgroundImage = `url('${fallbackUrl}')`;
                     bg.classList.add('loaded');
                     setTimeout(() => {
                         overlay.style.opacity = '0';
@@ -728,8 +728,18 @@
                     }, 400);
                 };
             } catch(e) {
-                bgImageUrl = `https://picsum.photos/1080/1920?random=${Math.random()}`;
-                bg.style.backgroundImage = `url('${bgImageUrl}')`;
+                // === ТОЖЕ СОХРАНЯЕМ FALLBACK ===
+                const fallbackUrl = `https://picsum.photos/1080/1920?random=${Math.random()}`;
+                
+                const fallbackImg = new Image();
+                fallbackImg.crossOrigin = "anonymous";
+                fallbackImg.src = fallbackUrl;
+                
+                fallbackImg.onload = () => {
+                    bgImageObject = fallbackImg;
+                };
+                
+                bg.style.backgroundImage = `url('${fallbackUrl}')`;
                 bg.classList.add('loaded');
                 overlay.style.opacity = '0';
                 content.classList.add('visible');
@@ -784,117 +794,104 @@
             }, 1000);
         }
 
-function stopCounter() {
-    if (!startTime) return;
-    
-    playFreeSound();
-    
-    const diff = Math.floor((Date.now() - startTime) / 1000);
-    clearInterval(timerId);
-    timerId = null;
-    
-    storage.total += diff;
-    storage.history.push({ d: new Date().toDateString(), v: diff, ts: Date.now() });
-    localStorage.setItem('time_data', JSON.stringify(storage));
-    localStorage.removeItem('active_start');
-    
-    document.getElementById('startBtn').disabled = false;
-    document.getElementById('stopBtn').disabled = true;
-    document.getElementById('stopBtn').classList.remove('active-stop');
-    document.getElementById('timer').textContent = '00:00:00';
-    
-    updateStats();
-    startTime = null;
-    
-    const supportMsg = supportMessages[Math.floor(Math.random() * supportMessages.length)];
-    msg(supportMsg);
-    
-    // === УБРАЛ newQuote() ===
-    // newQuote(); // <-- УДАЛИТЬ ЭТУ СТРОКУ!
-}
+        // ==================== ИСПРАВЛЕННАЯ ФУНКЦИЯ stopCounter() ====================
+        function stopCounter() {
+            if (!startTime) return;
+            
+            playFreeSound();
+            
+            const diff = Math.floor((Date.now() - startTime) / 1000);
+            clearInterval(timerId);
+            timerId = null;
+            
+            storage.total += diff;
+            storage.history.push({ d: new Date().toDateString(), v: diff, ts: Date.now() });
+            localStorage.setItem('time_data', JSON.stringify(storage));
+            localStorage.removeItem('active_start');
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('stopBtn').classList.remove('active-stop');
+            document.getElementById('timer').textContent = '00:00:00';
+            
+            updateStats();
+            startTime = null;
+            
+            const supportMsg = supportMessages[Math.floor(Math.random() * supportMessages.length)];
+            msg(supportMsg);
+            
+            // === УБРАЛ newQuote() - фон НЕ меняется ===
+        }
 
-        // ==================== СКРИНШОТ С ПРАВИЛЬНЫМ ФОНОМ ====================
+        // ==================== СКРИНШОТ С СОХРАНЁННЫМ ИЗОБРАЖЕНИЕМ ====================
         function saveAsImage() {
             msg("📸 Создаем фото...");
+            
+            if (!bgImageObject) {
+                msg("❌ Фон не загружен");
+                return;
+            }
             
             const quoteText = document.getElementById('qText').textContent;
             const quoteAuthor = document.getElementById('qAuthor').textContent;
             
-            // === ИСПОЛЬЗУЕМ ТОТ ЖЕ URL ЧТО И НА ЭКРАНЕ ===
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = bgImageUrl;
+            const canvas = document.createElement('canvas');
+            canvas.width = 1080;
+            canvas.height = 1920;
+            const ctx = canvas.getContext('2d');
             
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = 1080;
-                canvas.height = 1920;
-                const ctx = canvas.getContext('2d');
-                
-                // Рисуем фон
-                ctx.drawImage(img, 0, 0, 1080, 1920);
-                
-                // Градиент затемнения
-                const gradient = ctx.createLinearGradient(0, 1920, 0, 960);
-                gradient.addColorStop(0, 'rgba(0,0,0,0.95)');
-                gradient.addColorStop(0.5, 'rgba(0,0,0,0.6)');
-                gradient.addColorStop(1, 'rgba(0,0,0,0.2)');
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, 1080, 1920);
-                
-                // Кавычка
-                ctx.fillStyle = 'rgba(255,255,255,0.15)';
-                ctx.font = 'bold 200px "Playfair Display"';
-                ctx.fillText('"', 40, 180);
-                
-                // Текст цитаты
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'italic 52px "Playfair Display"';
-                ctx.textAlign = 'left';
-                ctx.shadowColor = 'rgba(0,0,0,0.8)';
-                ctx.shadowBlur = 10;
-                
-                // Перенос строк
-                const words = quoteText.split(' ');
-                let line = '';
-                let y = 1300;
-                const maxWidth = 960;
-                const lineHeight = 70;
-                
-                for (let n = 0; n < words.length; n++) {
-                    const testLine = line + words[n] + ' ';
-                    const metrics = ctx.measureText(testLine);
-                    if (metrics.width > maxWidth && n > 0) {
-                        ctx.fillText(line, 60, y);
-                        line = words[n] + ' ';
-                        y += lineHeight;
-                    } else {
-                        line = testLine;
-                    }
+            // === РИСУЕМ ТОТ ЖЕ ОБЪЕКТ ЧТО НА ЭКРАНЕ ===
+            ctx.drawImage(bgImageObject, 0, 0, 1080, 1920);
+            
+            const gradient = ctx.createLinearGradient(0, 1920, 0, 960);
+            gradient.addColorStop(0, 'rgba(0,0,0,0.95)');
+            gradient.addColorStop(0.5, 'rgba(0,0,0,0.6)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0.2)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1080, 1920);
+            
+            ctx.fillStyle = 'rgba(255,255,255,0.15)';
+            ctx.font = 'bold 200px "Playfair Display"';
+            ctx.fillText('"', 40, 180);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'italic 52px "Playfair Display"';
+            ctx.textAlign = 'left';
+            ctx.shadowColor = 'rgba(0,0,0,0.8)';
+            ctx.shadowBlur = 10;
+            
+            const words = quoteText.split(' ');
+            let line = '';
+            let y = 1300;
+            const maxWidth = 960;
+            const lineHeight = 70;
+            
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + words[n] + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && n > 0) {
+                    ctx.fillText(line, 60, y);
+                    line = words[n] + ' ';
+                    y += lineHeight;
+                } else {
+                    line = testLine;
                 }
-                ctx.fillText(line, 60, y);
-                
-                // Автор
-                ctx.font = '600 36px "Inter"';
-                ctx.fillStyle = 'rgba(255,255,255,0.7)';
-                ctx.textAlign = 'right';
-                ctx.shadowBlur = 8;
-                ctx.fillText(quoteAuthor, 1020, 1550);
-                
-                // Скачиваем
-                const link = document.createElement('a');
-                link.download = `focus_${Date.now()}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                msg("✅ Готово!");
-            };
+            }
+            ctx.fillText(line, 60, y);
             
-            img.onerror = () => {
-                msg("❌ Не удалось загрузить фон");
-            };
+            ctx.font = '600 36px "Inter"';
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.textAlign = 'right';
+            ctx.shadowBlur = 8;
+            ctx.fillText(quoteAuthor, 1020, 1550);
+            
+            const link = document.createElement('a');
+            link.download = `focus_${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            msg("✅ Готово!");
         }
 
-        // ==================== АНАЛИТИКА ====================
         function openAnalytics() {
             const modal = document.getElementById('analyticsModal');
             modal.classList.add('show');
@@ -930,7 +927,6 @@ function stopCounter() {
             document.getElementById('analyticsModal').classList.remove('show');
         }
 
-        // ==================== ДЫХАНИЕ ====================
         let breathInterval = null;
         
         function openBreathing() {
@@ -962,7 +958,6 @@ function stopCounter() {
             msg('🧘 Отличная работа!');
         }
 
-        // ==================== ВЫГРУЗКА ЛОГА ====================
         function downloadLog() {
             if (storage.history.length === 0) {
                 msg('❌ Нет данных для выгрузки');
@@ -986,7 +981,6 @@ function stopCounter() {
             closeAnalytics();
         }
 
-        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         window.onload = () => {
             newQuote();
             updateStats();
